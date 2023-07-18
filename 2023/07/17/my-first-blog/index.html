@@ -4,19 +4,21 @@
   <meta charset="utf-8">
   
   
-  <title>my first blog | Hexo</title>
+  <title>Hexo基本使用 | 熊熊烈火</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="article">
-<meta property="og:title" content="my first blog">
+  <meta name="description" content="前言Hexo的优点：快速、简洁且高效的博客框架。Hexo使用Markdown解析文章，在几秒内，即可利用按照指定主题生成静态网页。 安装安装使用hexo之前需要先安装Node.js和Git，当已经安装了Node.js和npm(npm是node.js的包管理工具)，可以通过以下命令安装hexo 1$ npm install -g hexo-cli  可以通过以下命令查看主机中是否安装了node.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo基本使用">
 <meta property="og:url" content="http://example.com/2023/07/17/my-first-blog/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="熊熊烈火">
+<meta property="og:description" content="前言Hexo的优点：快速、简洁且高效的博客框架。Hexo使用Markdown解析文章，在几秒内，即可利用按照指定主题生成静态网页。 安装安装使用hexo之前需要先安装Node.js和Git，当已经安装了Node.js和npm(npm是node.js的包管理工具)，可以通过以下命令安装hexo 1$ npm install -g hexo-cli  可以通过以下命令查看主机中是否安装了node.js">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-07-17T07:00:58.000Z">
-<meta property="article:modified_time" content="2023-07-17T07:00:58.904Z">
+<meta property="article:modified_time" content="2023-07-18T06:26:55.410Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="熊熊烈火" type="application/atom+xml">
   
   
     <link rel="shortcut icon" href="/favicon.png">
@@ -45,7 +47,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">熊熊烈火</a>
       </h1>
       
     </div>
@@ -87,7 +89,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      my first blog
+      Hexo基本使用
     </h1>
   
 
@@ -95,11 +97,26 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Hexo的优点：快速、简洁且高效的博客框架。Hexo使用Markdown解析文章，在几秒内，即可利用按照指定主题生成静态网页。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>安装使用hexo之前需要先安装Node.js和Git，当已经安装了Node.js和npm(npm是node.js的包管理工具)，可以通过以下命令安装hexo</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<p>可以通过以下命令查看主机中是否安装了node.js和npm</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ node --version    <span class="comment">#检查是否安装了node.js</span></span><br><span class="line">$ npm --version     <span class="comment">#检查是否安装了npm</span></span><br></pre></td></tr></table></figure>
+
+<p>如果已经安装，提示如下：</p>
+<p>$ C:\Users\YingZhou\blog&gt;node –version<br>v18.16.1</p>
+<p>C:\Users\YingZhou\blog&gt;npm –version<br>9.5.1</p>
+<h1 id="建站"><a href="#建站" class="headerlink" title="建站"></a>建站</h1><p>安装完Hexo之后，执行下列命令，Hexo将会在指定目录中新建所需要的文件，指定的目录即为Hexo的工作站</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hexo init &lt;folder&gt;</span><br><span class="line">$ <span class="built_in">cd</span> &lt;folder&gt;</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── _config.yml</span><br><span class="line">├── package.json</span><br><span class="line">├── scaffolds</span><br><span class="line">├── source</span><br><span class="line">|   ├── _drafts</span><br><span class="line">|   └── _posts</span><br><span class="line">└── themes</span><br></pre></td></tr></table></figure>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/07/17/my-first-blog/" data-id="clk6qm6t90002och71yyw890r" data-title="my first blog" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/07/17/my-first-blog/" data-id="clk6qm6t90002och71yyw890r" data-title="Hexo基本使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -163,7 +180,7 @@
           </li>
         
           <li>
-            <a href="/2023/07/17/my-first-blog/">my first blog</a>
+            <a href="/2023/07/17/my-first-blog/">Hexo基本使用</a>
           </li>
         
           <li>
