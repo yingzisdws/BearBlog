@@ -14,7 +14,7 @@
 <meta property="og:description" content="改善深层神经网络：超参数调试、正则化及优化概述  通过第一门课的学习，我们对于神经网络的基本概念，逻辑回归和神经网络的类比，以及浅层和深层神经网络有了了解。这门课针对深层神经网络的超参数调试、正则化以及优化做进一步介绍，以便在实际应用的时候，对于超参数的选择，提供了很多方法和例子，加深我们的理解。有效的运作神经网络主要包括：超参数调优、如何构建数据、如何确保优化算法正常运行，从而使学习算法在合理时">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-07-25T08:00:00.000Z">
-<meta property="article:modified_time" content="2023-07-26T10:40:14.640Z">
+<meta property="article:modified_time" content="2023-07-27T05:41:32.840Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="深度挖掘">
 <meta name="twitter:card" content="summary">
@@ -118,20 +118,14 @@
     </tr>
 </table>
 
-<h2 id="偏差误差"><a href="#偏差误差" class="headerlink" title="偏差误差"></a>偏差误差</h2><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><pre><code>        * 初始模型训练完成后，评估算法的偏差高不高  
-</code></pre><p>偏差 高：评估训练集或训练数据的性能；</p>
+<h2 id="偏差误差"><a href="#偏差误差" class="headerlink" title="偏差误差"></a>偏差误差</h2><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><pre><code>* 初始模型训练完成后，评估算法的偏差高不高  </code></pre><p>偏差 高：评估训练集或训练数据的性能；</p>
 <hr>
-<p>如果无法拟合训练集，则需要<strong>选择一个新网络</strong>或者<strong>花更多时间训练网络</strong>或者<strong>尝试更先进的优化算法</strong>。<br>本阶段需达成的目标是：<strong>拟合训练集</strong>。</p>
-<pre><code>        * **偏差**降低到可接受程度后进行**方差**评估  
-</code></pre><p><strong>方差</strong>高：最好的办法是<strong>采用更多的数据</strong>；当无法获得更多数据的时候，采用<strong>正则化</strong>来减少过拟合。</p>
-<pre><code>        * 最终目标  ：**低偏差、低方差** 框架。
-</code></pre><h3 id="偏差分析"><a href="#偏差分析" class="headerlink" title="偏差分析"></a>偏差分析</h3><pre><code>      collapsed:: true
-      神经网络训练的流程显示模型训练的目标是**低偏差、低方差**，需依据偏差、方差的高低调整训练策略。  
+<p>如果无法拟合训练集，则需要<strong>选择一个新网络</strong>或者<strong>花更多时间训练网络</strong>或者<strong>尝试更先进的优化算法</strong>。<br>本阶段需达成的目标是：<strong>拟合训练集</strong>。<br>            * <strong>偏差</strong>降低到可接受程度后进行<strong>方差</strong>评估<br><strong>方差</strong>高：最好的办法是<strong>采用更多的数据</strong>；当无法获得更多数据的时候，采用<strong>正则化</strong>来减少过拟合。<br>            * 最终目标  ：<strong>低偏差、低方差</strong> 框架。</p>
+<h3 id="偏差分析"><a href="#偏差分析" class="headerlink" title="偏差分析"></a>偏差分析</h3><pre><code>collapsed:: true
+神经网络训练的流程显示模型训练的目标是**低偏差、低方差**，需依据偏差、方差的高低调整训练策略。  
 
-        * **偏差：** 训练集误差与 **最优误差（贝叶斯误差）** 的比较结果；  
-</code></pre><p>最优误差：通常采用人的识别误差，如误差为0。</p>
-<pre><code>        * **方差：**验证集误差与 **最优误差（贝叶斯误差）** 的比较结果；
-</code></pre><table>
+  * **偏差：** 训练集误差与 **最优误差（贝叶斯误差）** 的比较结果；  </code></pre><p>最优误差：通常采用人的识别误差，如误差为0。<br>            * <strong>方差：</strong>验证集误差与 <strong>最优误差（贝叶斯误差）</strong> 的比较结果；</p>
+<table>
 <tr>
 <td>误差分析</td> <td>特征</td> <td>处理</td>
 </tr>
@@ -143,214 +137,66 @@
 </tr>
 </table>
 
-<h4 id="欠拟合问题处理"><a href="#欠拟合问题处理" class="headerlink" title="欠拟合问题处理"></a>欠拟合问题处理</h4><pre><code>          消除欠拟合是模型训练的第一步目标，至少要拟合训练集，如无法达到则说明“方向”性错误。  
-</code></pre><h4 id="过拟合问题处理"><a href="#过拟合问题处理" class="headerlink" title="过拟合问题处理"></a>过拟合问题处理</h4><pre><code>            * 更多的训练数据
-            * 正则化（当无法获取更多数据时）
-            * 数据生成
-</code></pre><h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><h3 id="（一）L2正则化"><a href="#（一）L2正则化" class="headerlink" title="（一）L2正则化"></a>（一）L2正则化</h3><h4 id="1、逻辑回归的正则化"><a href="#1、逻辑回归的正则化" class="headerlink" title="1、逻辑回归的正则化"></a>1、逻辑回归的正则化</h4><script type="math/tex; mode=display">
-              \text L2正则化：
-              J(W, b) = \frac{1}{m}\sum_{i=1}^mL(\hat{y}^{(i)},y) + \frac{\lambda}{2m}\mid\mid W \mid\mid_2^{2} \\
-              \text 向量参数 W 的 L2范数： \mid\mid W \mid\mid_2^{2} = W^{T}W = \sum_{j=1}^{n_{x}}w_j^{2} \\
-              W\in \mathbb{R}^{n_x}, b\in\mathbb{R} \\
-              \\
-              \text L1正则化：
-              J(W, b) = \frac{1}{m}\sum_{i=1}^mL(\hat{y}^{(i)},y) + \frac{\lambda}{2m}\mid\mid W \mid\mid_1 \\
-              \text 向量参数 W 的 L1范数： \mid\mid W \mid\mid_1 = \sum_{j=1}^{n_{x}}\mid w_j\mid \\</script><h4 id="2、神经网络的正则化"><a href="#2、神经网络的正则化" class="headerlink" title="2、神经网络的正则化"></a>2、神经网络的正则化</h4><script type="math/tex; mode=display">
-              \text L2正则化：
-              J(W^{[1]}, b^{[1]},...,W^{[L]}, b^{[L]}) = \frac{1}{m}\sum_{i=1}^mL(\hat{y}^{(i)},y) + \frac{\lambda}{2m}\sum_{l=1}^L\mid\mid W^{[l]} \mid\mid_F^{2} \\
-              \text 矩阵范数（费罗贝尼乌斯范数）被定义为矩阵中所有元素的平方和： \mid\mid W^{[l]} \mid\mid_F^{2} = \sum_{i=1}^{n^{l-1}}\sum_{j=1}^{n^{l}}(w_{ij}^{[l]})^{2}</script><h4 id="包含正则化项的梯度下降"><a href="#包含正则化项的梯度下降" class="headerlink" title="包含正则化项的梯度下降"></a>包含正则化项的梯度下降</h4><pre><code>          collapsed:: true
-</code></pre><script type="math/tex; mode=display">
-              dW^{[l]} = (From Back Prop) + \frac{\lambda}{m}W^{[l]} \\
-              \text参数更新：W^{[l]} = W^{[l]} - \alpha \times [d(From Back Prop) + \frac{\lambda}{m}W^{[l]}] \\
-              = W^{[l]} - \alpha\frac{\lambda}{m}W^{[l]} - \alpha \times d(From Back Prop) \\
-              = (1-\alpha\frac{\lambda}{m})W^{[l]} - \alpha \times d(From Back Prop)  \tag1</script><pre><code>          从公式（1）可以看到，使用L2正则化后， $W^&#123;[l]&#125;$ 更新时先乘了一个小于 1 的系数 $1-\alpha\frac&#123;\lambda&#125;&#123;m&#125;$ ，由此L2正则化也被称作**权重衰减**。  
-</code></pre><hr>
-<h5 id="正则化预防过拟合原理"><a href="#正则化预防过拟合原理" class="headerlink" title="正则化预防过拟合原理"></a>正则化预防过拟合原理</h5><script type="math/tex; mode=display">
-</script><pre><code>                1）由公式（1）可直观理解，当 $\lambda$ 足够大，权重矩阵W被设置为接近于0的值，即把多隐藏单元的权重设置为0，极限情况下神经网络会变成一个小的网络，如同一个逻辑回归单元，可是深度却很大，这会使网络从过拟合状态更接近高偏差状态。  
-                  2）权重参数W越小，则Z值也越小，其所在的取值区间将偏向于激活函数（如： $\tanh$ ）的线性变换部分，这也能防止过拟合的发生。 
-</code></pre><hr>
-<h3 id="（二）Dropout（随机失活）"><a href="#（二）Dropout（随机失活）" class="headerlink" title="（二）Dropout（随机失活）"></a>（二）Dropout（随机失活）</h3><pre><code>      collapsed:: true
-</code></pre><h4 id="处理流程"><a href="#处理流程" class="headerlink" title="处理流程"></a>处理流程</h4><p>遍历网络的每一层，设置消除神经网络节点的概率；消除一些节点，得到一个节点更少，规模更小的网络；用backprop方法进行训练。</p>
-<h4 id="dropout实施"><a href="#dropout实施" class="headerlink" title="dropout实施"></a>dropout实施</h4><p>反向随机失活(Inverted dropout)</p>
-<pre><code>            1. 定义向量 $d3$ :
-              <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d3 = np.random.rand(a3.shape[<span class="number">0</span>], a3.shape[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-            1. d3 与 keep-prob 值比较，得到**新的 d3**，keep-prob在网络的不同层可以是不同的
-            2. $a^&#123; [3]&#125;$ 计算激活值
-              <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a3 = np.multiply(a3, d3)</span><br></pre></td></tr></table></figure>
-            1. 扩展 $a^&#123; [3]&#125; $以保证$ a^&#123; [3]&#125; $期望值不变
-              <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a3 /= keep-prob</span><br></pre></td></tr></table></figure>
-            1. 在**测试阶段** 不使用dropout，因为不期望输出结果是随机的。当keep-prob值为1时，保留所有神经元。
-</code></pre><h4 id="dropout-预防过拟合原理"><a href="#dropout-预防过拟合原理" class="headerlink" title="dropout 预防过拟合原理"></a>dropout 预防过拟合原理</h4><pre><code>            dropout 正则化相当于在每一次迭代过程都是训练一个以当前网络神经元子集所组成的一个新的简化的网络（越简单的网络越容易是欠拟合）。
-</code></pre><h4 id="dropout-所带来的问题"><a href="#dropout-所带来的问题" class="headerlink" title="dropout 所带来的问题"></a>dropout 所带来的问题</h4><pre><code>            代价函数将不被明确定义，因为在每次迭代都会随机移除一些节点。
-</code></pre><h3 id="（三）其他正则化方法"><a href="#（三）其他正则化方法" class="headerlink" title="（三）其他正则化方法"></a>（三）其他正则化方法</h3><pre><code>      collapsed:: true
-</code></pre><h4 id="1、数据扩增"><a href="#1、数据扩增" class="headerlink" title="1、数据扩增"></a>1、数据扩增</h4><h4 id="2、early-stoping"><a href="#2、early-stoping" class="headerlink" title="2、early stoping"></a>2、early stoping</h4><pre><code>early stoping就是在中间点停止迭代过程，得到一个w中等大小的佛罗贝尼乌斯范数。
-</code></pre><h2 id="过拟合-处理小结"><a href="#过拟合-处理小结" class="headerlink" title="过拟合 处理小结"></a>过拟合 处理小结</h2><pre><code>      机器学习过程中需要解决的两个问题：  
-      1、代价函数优化  
-      解决这一问题的工具：梯度下降、Momentum、RMSProp、Adam。  
-      2、过拟合问题处理  
-      正则化、扩增数据等  
-</code></pre><script type="math/tex; mode=display">
-</script><pre><code>        在优化代价函数时，只需要留意 $w 和 b, J(w,b)$ 值越小越好，过拟合问题即减少方差，使用另一套工具实现，这个原理被称为**正交化**。
-        early stoping的主要 **缺点：** 是不能独立处理这两个问题，因为在提早停止了梯度下降也就结束优化代价函数； **优点：** 只运行一次梯度下降，就可以找出 $w$ 的较小值、中间值和较大值，而无需尝试 $L2$ 正则化超级参数的 $\lambda$ 的很多值。
-</code></pre><h2 id="加速训练"><a href="#加速训练" class="headerlink" title="加速训练"></a>加速训练</h2><h3 id="1、归一化输入"><a href="#1、归一化输入" class="headerlink" title="1、归一化输入"></a>1、归一化输入</h3><script type="math/tex; mode=display">
-</script><pre><code>      两个步骤：零均值、归一化方差  
-      无论是训练集还是测试集都是通过相同的 $\mu\text和\sigma^&#123;2&#125;$ 定义的数据转换，这两个是由训练集得出的。  
+<h4 id="欠拟合问题处理"><a href="#欠拟合问题处理" class="headerlink" title="欠拟合问题处理"></a>欠拟合问题处理</h4><pre><code>消除欠拟合是模型训练的第一步目标，至少要拟合训练集，如无法达到则说明“方向”性错误。  </code></pre><h4 id="过拟合问题处理"><a href="#过拟合问题处理" class="headerlink" title="过拟合问题处理"></a>过拟合问题处理</h4><pre><code>* 更多的训练数据
+* 正则化（当无法获取更多数据时）
+* 数据生成</code></pre><h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><h3 id="（一）L2正则化"><a href="#（一）L2正则化" class="headerlink" title="（一）L2正则化"></a>（一）L2正则化</h3><h4 id="1、逻辑回归的正则化"><a href="#1、逻辑回归的正则化" class="headerlink" title="1、逻辑回归的正则化"></a>1、逻辑回归的正则化</h4><p>$$<br>              \text L2正则化：<br>              J(W, b) = \frac{1}{m}\sum_{i=1}^mL(\hat{y}^{(i)},y) + \frac{\lambda}{2m}\mid\mid W \mid\mid_2^{2} \<br>              \text 向量参数 W 的 L2范数： \mid\mid W \mid\mid_2^{2} = W^{T}W = \sum_{j=1}^{n_{x}}w_j^{2} \<br>              W\in \mathbb{R}^{n_x}, b\in\mathbb{R} \<br>              \<br>              \text L1正则化：<br>              J(W, b) = \frac{1}{m}\sum_{i=1}^mL(\hat{y}^{(i)},y) + \frac{\lambda}{2m}\mid\mid W \mid\mid_1 \<br>              \text 向量参数 W 的 L1范数： \mid\mid W \mid\mid_1 = \sum_{j=1}^{n_{x}}\mid w_j\mid \\<br>$$          </p>
+<h4 id="2、神经网络的正则化"><a href="#2、神经网络的正则化" class="headerlink" title="2、神经网络的正则化"></a>2、神经网络的正则化</h4><p>$$<br>              \text L2正则化：<br>              J(W^{[1]}, b^{[1]},…,W^{[L]}, b^{[L]}) = \frac{1}{m}\sum_{i=1}^mL(\hat{y}^{(i)},y) + \frac{\lambda}{2m}\sum_{l=1}^L\mid\mid W^{[l]} \mid\mid_F^{2} \<br>              \text 矩阵范数（费罗贝尼乌斯范数）被定义为矩阵中所有元素的平方和： \mid\mid W^{[l]} \mid\mid_F^{2} = \sum_{i=1}^{n^{l-1}}\sum_{j=1}^{n^{l}}(w_{ij}^{[l]})^{2}<br>$$</p>
+<h4 id="包含正则化项的梯度下降"><a href="#包含正则化项的梯度下降" class="headerlink" title="包含正则化项的梯度下降"></a>包含正则化项的梯度下降</h4><pre><code>collapsed:: true</code></pre><p>$$<br>              dW^{[l]} = (From Back Prop) + \frac{\lambda}{m}W^{[l]} \<br>              \text参数更新：W^{[l]} = W^{[l]} - \alpha \times [d(From Back Prop) + \frac{\lambda}{m}W^{[l]}] \<br>              = W^{[l]} - \alpha\frac{\lambda}{m}W^{[l]} - \alpha \times d(From Back Prop) \<br>              = (1-\alpha\frac{\lambda}{m})W^{[l]} - \alpha \times d(From Back Prop)  \tag1<br>$$<br>              从公式（1）可以看到，使用L2正则化后， $W^{[l]}$ 更新时先乘了一个小于 1 的系数 $1-\alpha\frac{\lambda}{m}$ ，由此L2正则化也被称作<strong>权重衰减</strong>。  </p>
+<hr>
+<h5 id="正则化预防过拟合原理"><a href="#正则化预防过拟合原理" class="headerlink" title="正则化预防过拟合原理"></a>正则化预防过拟合原理</h5><p>$$<br>$$<br>                    1）由公式（1）可直观理解，当 $\lambda$ 足够大，权重矩阵W被设置为接近于0的值，即把多隐藏单元的权重设置为0，极限情况下神经网络会变成一个小的网络，如同一个逻辑回归单元，可是深度却很大，这会使网络从过拟合状态更接近高偏差状态。<br>                      2）权重参数W越小，则Z值也越小，其所在的取值区间将偏向于激活函数（如： $\tanh$ ）的线性变换部分，这也能防止过拟合的发生。 </p>
+<hr>
+<h3 id="（二）Dropout（随机失活）"><a href="#（二）Dropout（随机失活）" class="headerlink" title="（二）Dropout（随机失活）"></a>（二）Dropout（随机失活）</h3><pre><code>collapsed:: true</code></pre><h4 id="处理流程"><a href="#处理流程" class="headerlink" title="处理流程"></a>处理流程</h4><p>遍历网络的每一层，设置消除神经网络节点的概率；消除一些节点，得到一个节点更少，规模更小的网络；用backprop方法进行训练。</p>
+<h4 id="dropout实施"><a href="#dropout实施" class="headerlink" title="dropout实施"></a>dropout实施</h4><p>反向随机失活(Inverted dropout)<br>                1. 定义向量 $d3$ :<br>                  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d3 = np.random.rand(a3.shape[<span class="number">0</span>], a3.shape[<span class="number">1</span>])</span><br></pre></td></tr></table></figure><br>                1. d3 与 keep-prob 值比较，得到<strong>新的 d3</strong>，keep-prob在网络的不同层可以是不同的<br>                2. $a^{ [3]}$ 计算激活值<br>                  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a3 = np.multiply(a3, d3)</span><br></pre></td></tr></table></figure><br>                1. 扩展 $a^{ [3]} $以保证$ a^{ [3]} $期望值不变<br>                  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a3 /= keep-prob</span><br></pre></td></tr></table></figure><br>                1. 在<strong>测试阶段</strong> 不使用dropout，因为不期望输出结果是随机的。当keep-prob值为1时，保留所有神经元。</p>
+<h4 id="dropout-预防过拟合原理"><a href="#dropout-预防过拟合原理" class="headerlink" title="dropout 预防过拟合原理"></a>dropout 预防过拟合原理</h4><pre><code>dropout 正则化相当于在每一次迭代过程都是训练一个以当前网络神经元子集所组成的一个新的简化的网络（越简单的网络越容易是欠拟合）。</code></pre><h4 id="dropout-所带来的问题"><a href="#dropout-所带来的问题" class="headerlink" title="dropout 所带来的问题"></a>dropout 所带来的问题</h4><pre><code>代价函数将不被明确定义，因为在每次迭代都会随机移除一些节点。</code></pre><h3 id="（三）其他正则化方法"><a href="#（三）其他正则化方法" class="headerlink" title="（三）其他正则化方法"></a>（三）其他正则化方法</h3><pre><code>collapsed:: true</code></pre><h4 id="1、数据扩增"><a href="#1、数据扩增" class="headerlink" title="1、数据扩增"></a>1、数据扩增</h4><h4 id="2、early-stoping"><a href="#2、early-stoping" class="headerlink" title="2、early stoping"></a>2、early stoping</h4><pre><code>early stoping就是在中间点停止迭代过程，得到一个w中等大小的佛罗贝尼乌斯范数。</code></pre><h2 id="过拟合-处理小结"><a href="#过拟合-处理小结" class="headerlink" title="过拟合 处理小结"></a>过拟合 处理小结</h2><pre><code>机器学习过程中需要解决的两个问题：  
+1、代价函数优化  
+解决这一问题的工具：梯度下降、Momentum、RMSProp、Adam。  
+2、过拟合问题处理  
+正则化、扩增数据等  </code></pre><p>$$<br>$$<br>            在优化代价函数时，只需要留意 $w 和 b, J(w,b)$ 值越小越好，过拟合问题即减少方差，使用另一套工具实现，这个原理被称为<strong>正交化</strong>。<br>            early stoping的主要 <strong>缺点：</strong> 是不能独立处理这两个问题，因为在提早停止了梯度下降也就结束优化代价函数； <strong>优点：</strong> 只运行一次梯度下降，就可以找出 $w$ 的较小值、中间值和较大值，而无需尝试 $L2$ 正则化超级参数的 $\lambda$ 的很多值。</p>
+<h2 id="加速训练"><a href="#加速训练" class="headerlink" title="加速训练"></a>加速训练</h2><h3 id="1、归一化输入"><a href="#1、归一化输入" class="headerlink" title="1、归一化输入"></a>1、归一化输入</h3><p>$$<br>$$<br>          两个步骤：零均值、归一化方差<br>          无论是训练集还是测试集都是通过相同的 $\mu\text和\sigma^{2}$ 定义的数据转换，这两个是由训练集得出的。  </p>
+<pre><code>* 零均值化</code></pre><p>$$<br>向量<br>\mu = \frac{1}{m}\sum_{i=1}^{m}x^{(i)} \<br>x = x - \mu<br>$$<br>            * 归一化方差<br>$$<br>数据离散程度：\sigma^{2} = \frac{1}{m}\sum_{i=1}^{m}(x^{(i)})^{2} \<br>归一化：x = \frac{x}{\sigma^{2}}<br>$$</p>
+<h3 id="2、参数初始化"><a href="#2、参数初始化" class="headerlink" title="2、参数初始化"></a>2、参数初始化</h3><pre><code>问题  
 
-        * 零均值化
-</code></pre><script type="math/tex; mode=display">
-向量
-\mu = \frac{1}{m}\sum_{i=1}^{m}x^{(i)} \\
-x = x - \mu</script><pre><code>        * 归一化方差
-</code></pre><script type="math/tex; mode=display">
-数据离散程度：\sigma^{2} = \frac{1}{m}\sum_{i=1}^{m}(x^{(i)})^{2} \\
-归一化：x = \frac{x}{\sigma^{2}}</script><h3 id="2、参数初始化"><a href="#2、参数初始化" class="headerlink" title="2、参数初始化"></a>2、参数初始化</h3><pre><code>      问题  
+  梯度消失
+  梯度爆炸  </code></pre><p>训练神经网络的时候，有时候梯度会变得非常大或非常小，这造成了训练的难度（难以收敛）  </p>
+<p>解决办法<br>权重初始化，设置权重矩阵：<br>$$<br>w^{[l]} = np.random.randn(shape) * np.sqrt(\frac{1}{n^{[l-1]}}) \<br>$$ 激活函数为 tanh，使用： $\sqrt{\frac{1}{n^{[l-1]}}}$ ，也被称为Xavier初始化。<br>激活函数为 Relu，使用： $\sqrt{\frac{2}{n^{[l-1]}}}$</p>
+<h2 id="梯度检查"><a href="#梯度检查" class="headerlink" title="梯度检查"></a>梯度检查</h2><pre><code>用于发现 backprop  </code></pre><p>$$<br>      \text 1）计算gradapprox \<br>      1. \theta^{+} = \theta + \varepsilon\\<br>      2. \theta^{-} = \theta - \varepsilon\\<br>      3. J^{+} = J(\theta^{+})\\<br>      4. J^{-} = J(\theta^{-})\\<br>      5. gradapprox = \frac{J^{+} - J^{-}}{2  \varepsilon} \<br>      2) 通过反向传播，计算 grad<br>      3) 计算梯度差值：<br>$$</p>
+<p>$$<br>      difference = \frac{\mid\mid grad - gradapprox \mid\mid_2}{\mid\mid grad \mid\mid_2 + \mid\mid gradapprox \mid\mid_2}   \tag{2}<br>$$<br>      如果差值较小（比如小于： $10^{-7}$ ）则可判断梯度计算正确。  </p>
+<h2 id="优化算法"><a href="#优化算法" class="headerlink" title="优化算法"></a>优化算法</h2><pre><code>目的：加快神经网络的运行。  </code></pre><h3 id="（一）mini-batch梯度下降"><a href="#（一）mini-batch梯度下降" class="headerlink" title="（一）mini-batch梯度下降"></a>（一）mini-batch梯度下降</h3><h4 id="处理过程"><a href="#处理过程" class="headerlink" title="处理过程"></a>处理过程</h4><p>$$<br>              \text 前向传播： Z^{[1]} = W^{[1]}X^{\{t\}} + b^{[1]}\\<br>              子集代价函数： J = \frac{1}{num}\sum_{i=1}^{num}L(\hat{y}^{(i)}, y^{(i)})\\<br>              正则化代价函数： J^{\{t\}} = \frac{1}{num}\sum_{i=1}^{num}L(\hat{y}^{(i)}, y^{(i)}) + \frac{\lambda}{2\times{1000}}\sum_{l}\mid\mid{w^{[l]}\mid\mid}^{2}_{F} \\<br>              参数更新： W^{[l]} = W^{[l]} - \alpha \times{dW^{[l]}}\\<br>$$</p>
+<pre><code>* 训练时，每个mini-batch都会进行一次完整的前线传播、反向传播、参数更新。在一个epoch内，实际上已经进行了多次参数更新。</code></pre><h4 id="batch-size-选择"><a href="#batch-size-选择" class="headerlink" title="batch size 选择"></a>batch size 选择</h4><pre><code>两个极端变种：  
 
-        梯度消失
-        梯度爆炸  
-</code></pre><p>训练神经网络的时候，有时候梯度会变得非常大或非常小，这造成了训练的难度（难以收敛）  </p>
-<p>解决办法<br>权重初始化，设置权重矩阵：</p>
-<script type="math/tex; mode=display">
-w^{[l]} = np.random.randn(shape) * np.sqrt(\frac{1}{n^{[l-1]}}) \\
-$$ 激活函数为 tanh，使用： $\sqrt{\frac{1}{n^{[l-1]}}}$ ，也被称为Xavier初始化。  
-激活函数为 Relu，使用： $\sqrt{\frac{2}{n^{[l-1]}}}$
-
-## 梯度检查
-
-      用于发现 backprop</script><pre><code>  \text 1）计算gradapprox \\
-  1. \theta^&#123;+&#125; = \theta + \varepsilon\\  
-  2. \theta^&#123;-&#125; = \theta - \varepsilon\\ 
-  3. J^&#123;+&#125; = J(\theta^&#123;+&#125;)\\ 
-  4. J^&#123;-&#125; = J(\theta^&#123;-&#125;)\\ 
-  5. gradapprox = \frac&#123;J^&#123;+&#125; - J^&#123;-&#125;&#125;&#123;2  \varepsilon&#125; \\
-  2) 通过反向传播，计算 grad  
-  3) 计算梯度差值：  
-</code></pre><script type="math/tex; mode=display">
-</script><pre><code>  difference = \frac&#123;\mid\mid grad - gradapprox \mid\mid_2&#125;&#123;\mid\mid grad \mid\mid_2 + \mid\mid gradapprox \mid\mid_2&#125;   \tag&#123;2&#125;
-</code></pre><script type="math/tex; mode=display">
-      如果差值较小（比如小于： $10^{-7}$ ）则可判断梯度计算正确。  
-
-## 优化算法
-
-      目的：加快神经网络的运行。  
-### （一）mini-batch梯度下降
-#### 处理过程</script><pre><code>          \text 前向传播： Z^&#123;[1]&#125; = W^&#123;[1]&#125;X^&#123;\&#123;t\&#125;&#125; + b^&#123;[1]&#125;\\ 
-          子集代价函数： J = \frac&#123;1&#125;&#123;num&#125;\sum_&#123;i=1&#125;^&#123;num&#125;L(\hat&#123;y&#125;^&#123;(i)&#125;, y^&#123;(i)&#125;)\\  
-          正则化代价函数： J^&#123;\&#123;t\&#125;&#125; = \frac&#123;1&#125;&#123;num&#125;\sum_&#123;i=1&#125;^&#123;num&#125;L(\hat&#123;y&#125;^&#123;(i)&#125;, y^&#123;(i)&#125;) + \frac&#123;\lambda&#125;&#123;2\times&#123;1000&#125;&#125;\sum_&#123;l&#125;\mid\mid&#123;w^&#123;[l]&#125;\mid\mid&#125;^&#123;2&#125;_&#123;F&#125; \\ 
-          参数更新： W^&#123;[l]&#125; = W^&#123;[l]&#125; - \alpha \times&#123;dW^&#123;[l]&#125;&#125;\\  
-</code></pre><script type="math/tex; mode=display">
-
-                * 训练时，每个mini-batch都会进行一次完整的前线传播、反向传播、参数更新。在一个epoch内，实际上已经进行了多次参数更新。
-
-#### batch size 选择
-
-              两个极端变种：  
-
-                * mini-batch 大小等于m，其实就是batch梯度下降；
-                * mini-batch 大小为1，则为随机梯度下降；  
-
-通常选择2的n次方，如：64、256、512。
-
-### （二）基于指数加权平均的优化算法</script><pre><code>      \text 指数加权平均数（指数加权移动平均数）：平均了 $\frac&#123;1&#125;&#123;1-\beta&#125;$ 个数据。  
-</code></pre><script type="math/tex; mode=display">
-</script><pre><code>          v_&#123;t&#125; = \beta \times&#123;v_&#123;t-1&#125;&#125; + (1-\beta) \times \theta _&#123;t&#125;
-</code></pre><script type="math/tex; mode=display">
-          偏差修正</script><pre><code>      v_&#123;t&#125; = \frac&#123;v_&#123;t&#125;&#125;&#123;1-\beta ^&#123;t&#125;&#125;
-</code></pre><script type="math/tex; mode=display">
-          下述的算法优化都是在正向传播、反向传播后得到参数的梯度值，在参数更新前对梯度值先进行平滑后再做参数更新。  
-### 1、动量梯度下降（Momentum）</script><pre><code>      \begin&#123;cases&#125;
-      v_&#123;dW^&#123;[l]&#125;&#125; = \beta v_&#123;dW^&#123;[l]&#125;&#125; + (1 - \beta) dW^&#123;[l]&#125; \\
-      W^&#123;[l]&#125; = W^&#123;[l]&#125; - \alpha v_&#123;dW^&#123;[l]&#125;&#125; \\
-      \end&#123;cases&#125;\tag&#123;3&#125; 
-</code></pre><script type="math/tex; mode=display">
-</script><pre><code>      \begin&#123;cases&#125;
-      v_&#123;db^&#123;[l]&#125;&#125; = \beta v_&#123;db^&#123;[l]&#125;&#125; + (1 - \beta) db^&#123;[l]&#125; \\
-      b^&#123;[l]&#125; = b^&#123;[l]&#125; - \alpha v_&#123;db^&#123;[l]&#125;&#125; \\
-      \end&#123;cases&#125;\tag&#123;4&#125; \\
-</code></pre><script type="math/tex; mode=display">
-          where L is the number of layers, $\beta$ is the momentum and $\alpha$ is the learning rate.  
-### 2、RMSprop（Root Mean Square prop）</script><pre><code>      \begin&#123;cases&#125;
-      s_&#123;dW^&#123;[l]&#125;&#125; = \beta_2 s_&#123;dW^&#123;[l]&#125;&#125; + (1 - \beta_2) (\frac&#123;\partial \mathcal&#123;J&#125; &#125;&#123;\partial W^&#123;[l]&#125; &#125;)^2 \\\
-      W^&#123;[l]&#125; = W^&#123;[l]&#125; - \alpha \frac&#123;dW&#125;&#123;\sqrt&#123;s_&#123;dW^&#123;[l]&#125;&#125;&#125;&#125;\\\
-      s_&#123;db^&#123;[l]&#125;&#125; = \beta_2 s_&#123;db^&#123;[l]&#125;&#125; + (1 - \beta_2) (\frac&#123;\partial \mathcal&#123;J&#125; &#125;&#123;\partial b^&#123;[l]&#125; &#125;)^2 \\\
-      b^&#123;[l]&#125; = b^&#123;[l]&#125; - \alpha \frac&#123;db&#125;&#123;\sqrt&#123;s_&#123;db^&#123;[l]&#125;&#125;&#125;&#125;
-      \end&#123;cases&#125;
-</code></pre><script type="math/tex; mode=display">
-
-### 3、Adam 优化算法
-******</script><p>\begin{cases}<br>          v_{dW^{[l]}} &amp;= \beta_1 v_{dW^{[l]}} + (1 - \beta_1) (\frac{\partial \mathcal{J} }{\partial W^{[l]} }) \\\<br>          v^c_{dW^{[l]}} &amp;= \frac{v_{dW^{[l]}}}{1 - (\beta_1)^t} \\\<br>          s_{dW^{[l]}} &amp;= \beta_2 s_{dW^{[l]}} + (1 - \beta_2) (\frac{\partial \mathcal{J} }{\partial W^{[l]} })^2 \\\<br>          s^c_{dW^{[l]}} &amp;= \frac{s_{dW^{[l]}}}{1 - (\beta_1)^t} \\\<br>          W^{[l]} &amp;= W^{[l]} - \alpha (\frac{v^c_{dW^{[l]}}}{\sqrt{s^c_{dW^{[l]}}} + \varepsilon})<br>\end{cases}</p>
-<script type="math/tex; mode=display">
-</script><script type="math/tex; mode=display">
-          where:          
-            * t counts the number of steps taken of Adam
-            * L is the number of layers
-            * $\beta_1$ and $\beta_2$ are hyperparameters that control the two exponentially weighted averages.
-            * $\alpha$ is the learning rate
-            * $\varepsilon$ is a very small number to avoid dividing by zero
-
-## (三) 学习率 
-
-      指数衰减公式：</script><pre><code>  \alpha = 0.95^&#123;epoch\_num&#125;  \alpha_0 
-</code></pre><script type="math/tex; mode=display">
-      其他衰减公式：</script><pre><code>  \alpha = \frac&#123;k&#125;&#123;\sqrt&#123;epoch\_num&#125;&#125; \alpha_0  \\
-  \alpha = \frac&#123;k&#125;&#123;\sqrt&#123;t&#125;&#125; \alpha_0  \\
-  \text (t为mini-batch数字）
-</code></pre><script type="math/tex; mode=display">
-
-## (四) 归一化网络激活函数(Batch Normalization)
-
-        * 类似于输入X，把l-1层的激活值当作l层的输入，归一化也可加快训练速度。与X归一化也存在差别：隐藏单元不必是平均值0和方差1。
-        * 隐藏层归一化选择在调用激活函数前，而归一化Z值，即： $a^{[l]} = g(\tilde{z}^{[l]})$ 。
-
-### 隐藏层归一化公式</script><script type="math/tex; mode=display">
-</script><pre><code>      \mu = \frac&#123;1&#125;&#123;m&#125;\sum_&#123;i=1&#125;^&#123;m&#125;z^&#123;[l](i)&#125; \\
-      \sigma^&#123;2&#125; = \frac&#123;1&#125;&#123;m&#125;\sum_&#123;i=1&#125;^&#123;m&#125;(z^&#123;[l](i)&#125;-\mu)^&#123;2&#125; \\
-      z^&#123;[l](i)&#125;_&#123;norm&#125; = \frac&#123;z^&#123;[l](i)&#125;-\mu&#125;&#123;\sqrt&#123;\sigma^&#123;2&#125;+\epsilon&#125;&#125; \\
-      \text&#123;上面公式完成了归一化，但隐藏单元并不一定想平均值为0，方差为1，下面公式中新参数决定了均值和方差&#125; \\
-      \tilde&#123;z&#125;^&#123;[l](i)&#125; = \gamma z^&#123;[l](i)&#125;_&#123;norm&#125; + \beta \\ 
-</code></pre><script type="math/tex; mode=display">
-          l层参数增加两个： $\beta 和 \gamma$ ，利用梯度下降进行优化：</script><pre><code>      \beta^&#123;[l]&#125; = \beta^&#123;[l]&#125; - \alpha d\beta^&#123;[l]&#125; \\
-      \gamma^&#123;[l]&#125; = \gamma^&#123;[l]&#125; - \alpha d\gamma^&#123;[l]&#125;
-</code></pre><script type="math/tex; mode=display">
-### 归一化有效性原理
-
-          1）类似于对输入进行归一化操作后加快梯度下降速度的原理，对隐藏层进行归一化操作有着相似的作用；  
-          2）Batch 归一化减少了输入值改变的问题,它的确使这些值变得更稳定,神经网络的之后层就会有更坚实的基础。 即使使输入分布改变了一些, 它会改变得更少。 它做的是当前层保持学习,当改变时,迫使后层适应的程度减小了,你可以这样想,它减弱了前层参数的作用与后层参数的作用之间的联系, 它使得网络每层都可以自己学习, 稍稍独立于其它层, 这有助于加速整个网络的学习。  
-### Batch 归一化的使用
-#### 网络框架
-
-        Tensorflow
-                  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.nn.batch_normalization()</span><br></pre></td></tr></table></figure>
-
-#### 使用方法
-
-        训练时的Batch Norm  
-Batch归一化通常和训练集的mini-batch一起使用。  
-按 $mini-batch(X^{[i]})$ 为单位计算 $z^{[l]}、\mu、\sigma^{2}$ 。  
-        测试时的Batch Norm  
-问题：单个样本的测试如何获得 $\mu 和 \sigma$ ?  
-使用指数加权平均进行估算，这个平均数涵盖所有的mini-batch，计算过程：  
-                1. 计算每个mini-batch的每个隐藏层计算 $\mu^{\{i\}[l]}、\sigma^{2\{i\}[l]}$ ;
-                2. 使用指数加权平均计算训练过程中得到的 $\mu^{\{i\}[l]}、\sigma^{2\{i\}[l]}$
-                3. 计算 $z^{ i}_{ norm}、~{z} $
-
-## Softmax 回归
-
-        * 线形变换及激活</script><p>Z^{[l]} = W^{[l]}a^{[l-1]} + b^{[l]} \\<br>t = e^{Z^{[l]}} \\<br>a^{[l]} = \frac{t_{i}}{\sum{_{i=1}^{n}}t_{i}}</p>
-<script type="math/tex; mode=display">
-        * 损失函数</script><p>L(\hat{y}, y) = -\sum_{j=1}^{n}y_{j}\log\hat{y}_{j}</p>
-<script type="math/tex; mode=display">
-        * 代价函数</script><p>J(w^{[l]}, b^{[l]}, … …) = \sum_{i=1}^{m}L(\hat{y}^{(i)}, y^{(i)})</p>
-<script type="math/tex; mode=display">
-        * softmax 与 hardmax  
-Softmax 这个名称的来源是与所谓 hardmax 对比, hardmax 会把向量 z 变成这个向量[ 1 0 0 0 ], hardmax 函数会观察 z 的元素,然后在 z 中最大元素的位置放上 1,其它位置放上 0。  
-        * 反向传播</script><p>\frac{\partial{L}}{\partial{z}} = dz^{[l]} = \hat{y} - y</p>
-<p>$$</p>
+  * mini-batch 大小等于m，其实就是batch梯度下降；
+  * mini-batch 大小为1，则为随机梯度下降；  </code></pre><p>通常选择2的n次方，如：64、256、512。</p>
+<h3 id="（二）基于指数加权平均的优化算法"><a href="#（二）基于指数加权平均的优化算法" class="headerlink" title="（二）基于指数加权平均的优化算法"></a>（二）基于指数加权平均的优化算法</h3><p>$$<br>          \text 指数加权平均数（指数加权移动平均数）：平均了 $\frac{1}{1-\beta}$ 个数据。<br>$$</p>
+<p>$$<br>              v_{t} = \beta \times{v_{t-1}} + (1-\beta) \times \theta _{t}<br>$$<br>          偏差修正  </p>
+<p>$$<br>          v_{t} = \frac{v_{t}}{1-\beta ^{t}}<br>$$<br>          下述的算法优化都是在正向传播、反向传播后得到参数的梯度值，在参数更新前对梯度值先进行平滑后再做参数更新。  </p>
+<h3 id="1、动量梯度下降（Momentum）"><a href="#1、动量梯度下降（Momentum）" class="headerlink" title="1、动量梯度下降（Momentum）"></a>1、动量梯度下降（Momentum）</h3><p>$$<br>          \begin{cases}<br>          v_{dW^{[l]}} = \beta v_{dW^{[l]}} + (1 - \beta) dW^{[l]} \<br>          W^{[l]} = W^{[l]} - \alpha v_{dW^{[l]}} \<br>          \end{cases}\tag{3}<br>$$<br>$$<br>          \begin{cases}<br>          v_{db^{[l]}} = \beta v_{db^{[l]}} + (1 - \beta) db^{[l]} \<br>          b^{[l]} = b^{[l]} - \alpha v_{db^{[l]}} \<br>          \end{cases}\tag{4} \<br>$$<br>          where L is the number of layers, $\beta$ is the momentum and $\alpha$ is the learning rate.  </p>
+<h3 id="2、RMSprop（Root-Mean-Square-prop）"><a href="#2、RMSprop（Root-Mean-Square-prop）" class="headerlink" title="2、RMSprop（Root Mean Square prop）"></a>2、RMSprop（Root Mean Square prop）</h3><p>$$<br>          \begin{cases}<br>          s_{dW^{[l]}} = \beta_2 s_{dW^{[l]}} + (1 - \beta_2) (\frac{\partial \mathcal{J} }{\partial W^{[l]} })^2 \\<br>          W^{[l]} = W^{[l]} - \alpha \frac{dW}{\sqrt{s_{dW^{[l]}}}}\\<br>          s_{db^{[l]}} = \beta_2 s_{db^{[l]}} + (1 - \beta_2) (\frac{\partial \mathcal{J} }{\partial b^{[l]} })^2 \\<br>          b^{[l]} = b^{[l]} - \alpha \frac{db}{\sqrt{s_{db^{[l]}}}}<br>          \end{cases}<br>$$</p>
+<h3 id="3、Adam-优化算法"><a href="#3、Adam-优化算法" class="headerlink" title="3、Adam 优化算法"></a>3、Adam 优化算法</h3><hr>
+<p>$$<br>\begin{cases}<br>          v_{dW^{[l]}} &amp;= \beta_1 v_{dW^{[l]}} + (1 - \beta_1) (\frac{\partial \mathcal{J} }{\partial W^{[l]} }) \\<br>          v^c_{dW^{[l]}} &amp;= \frac{v_{dW^{[l]}}}{1 - (\beta_1)^t} \\<br>          s_{dW^{[l]}} &amp;= \beta_2 s_{dW^{[l]}} + (1 - \beta_2) (\frac{\partial \mathcal{J} }{\partial W^{[l]} })^2 \\<br>          s^c_{dW^{[l]}} &amp;= \frac{s_{dW^{[l]}}}{1 - (\beta_1)^t} \\<br>          W^{[l]} &amp;= W^{[l]} - \alpha (\frac{v^c_{dW^{[l]}}}{\sqrt{s^c_{dW^{[l]}}} + \varepsilon})<br>\end{cases}<br>$$    </p>
+<p>$$<br>$$<br>          where:<br>            * t counts the number of steps taken of Adam<br>            * L is the number of layers<br>            * $\beta_1$ and $\beta_2$ are hyperparameters that control the two exponentially weighted averages.<br>            * $\alpha$ is the learning rate<br>            * $\varepsilon$ is a very small number to avoid dividing by zero</p>
+<h2 id="三-学习率"><a href="#三-学习率" class="headerlink" title="(三) 学习率"></a>(三) 学习率</h2><pre><code>指数衰减公式：  </code></pre><p>$$<br>      \alpha = 0.95^{epoch_num}  \alpha_0<br>$$<br>      其他衰减公式：  </p>
+<p>$$<br>      \alpha = \frac{k}{\sqrt{epoch_num}} \alpha_0  \<br>      \alpha = \frac{k}{\sqrt{t}} \alpha_0  \<br>      \text (t为mini-batch数字）<br>$$    </p>
+<h2 id="四-归一化网络激活函数-Batch-Normalization"><a href="#四-归一化网络激活函数-Batch-Normalization" class="headerlink" title="(四) 归一化网络激活函数(Batch Normalization)"></a>(四) 归一化网络激活函数(Batch Normalization)</h2><pre><code>* 类似于输入X，把l-1层的激活值当作l层的输入，归一化也可加快训练速度。与X归一化也存在差别：隐藏单元不必是平均值0和方差1。
+* 隐藏层归一化选择在调用激活函数前，而归一化Z值，即： </code></pre><p>$$<br>a^{[l]} = g(\tilde{z}^{[l]})<br>$$</p>
+<h3 id="隐藏层归一化公式"><a href="#隐藏层归一化公式" class="headerlink" title="隐藏层归一化公式"></a>隐藏层归一化公式</h3><p>$$<br>\mu = \frac{1}{m}\sum_{i=1}^{m}z^{[l](i)} \\<br>\sigma^{2} = \frac{1}{m}\sum_{i=1}^{m}(z^{[l](i)}-\mu)^{2} \\<br>z^{[l](i)}_{norm} = \frac{z^{[l](i)}-\mu}{\sqrt{\sigma^{2}+\epsilon}} \\<br>$$</p>
+<p>$$<br>\text{上面公式完成了归一化，但隐藏单元并不一定想平均值为0，方差为1，下面公式中新参数决定了均值和方差}<br>$$</p>
+<p>$$<br>\tilde{z}^{[l](i)} = \gamma z^{[l](i)}_{n} + \beta<br>$$</p>
+<p>n是代表norm</p>
+<p>$$<br>          \text l层参数增加两个： \beta 和 \gamma ，利用梯度下降进行优化:\\<br>          \beta^{[l]} = \beta^{[l]} - \alpha d\beta^{[l]} \\<br>          \gamma^{[l]} = \gamma^{[l]} - \alpha d\gamma^{[l]}<br>$$        </p>
+<h3 id="归一化有效性原理"><a href="#归一化有效性原理" class="headerlink" title="归一化有效性原理"></a>归一化有效性原理</h3><pre><code>1）类似于对输入进行归一化操作后加快梯度下降速度的原理，对隐藏层进行归一化操作有着相似的作用；  
+2）Batch 归一化减少了输入值改变的问题,它的确使这些值变得更稳定,神经网络的之后层就会有更坚实的基础。 即使使输入分布改变了一些, 它会改变得更少。 它做的是当前层保持学习,当改变时,迫使后层适应的程度减小了,你可以这样想,它减弱了前层参数的作用与后层参数的作用之间的联系, 它使得网络每层都可以自己学习, 稍稍独立于其它层, 这有助于加速整个网络的学习。  </code></pre><h3 id="Batch-归一化的使用"><a href="#Batch-归一化的使用" class="headerlink" title="Batch 归一化的使用"></a>Batch 归一化的使用</h3><h4 id="网络框架"><a href="#网络框架" class="headerlink" title="网络框架"></a>网络框架</h4><pre><code>Tensorflow
+          <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tf.nn.batch_normalization()</span><br></pre></td></tr></table></figure></code></pre><h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><pre><code>训练时的Batch Norm  </code></pre><p>Batch归一化通常和训练集的mini-batch一起使用。<br>$$<br>\text 按 mini-batch(X^{[i]}) 为单位计算 z^{[l]}、\mu、\sigma^{2}<br>$$</p>
+<pre><code>测试时的Batch Norm  </code></pre><p>问题：单个样本的测试如何获得 $\mu 和 \sigma$ ?<br>使用指数加权平均进行估算，这个平均数涵盖所有的mini-batch，计算过程：<br>                1. 计算每个mini-batch的每个隐藏层计算 $\mu^{\{i\}[l]}、\sigma^{2\{i\}[l]}$ ;<br>                2. 使用指数加权平均计算训练过程中得到的 $\mu^{\{i\}[l]}、\sigma^{2\{i\}[l]}$<br>                3. 计算 $z^{ i}_{ norm}、~{z} $</p>
+<h2 id="Softmax-回归"><a href="#Softmax-回归" class="headerlink" title="Softmax 回归"></a>Softmax 回归</h2><p>线形变换及激活<br>$$<br>Z^{[l]} = W^{[l]}a^{[l-1]} + b^{[l]}\<br>t = e^{Z^{[l]}}<br>$$</p>
+<p>$$<br>a^{[l]} = \frac{t_{i}}{\sum{_{i=1}^{n}}t_{i}}<br>$$</p>
+<p>损失函数<br>$$<br>L(\hat{y}, y) = -\sum_{j=1}^{n}y_{j}\log\hat{y}_{j}<br>$$</p>
+<p>代价函数<br>$$<br>J(w^{[l]}, b^{[l]}, … …) = \sum_{i=1}^{m}L(\hat{y}^{(i)}, y^{(i)})<br>$$<br>        * softmax 与 hardmax<br>Softmax 这个名称的来源是与所谓 hardmax 对比, hardmax 会把向量 z 变成这个向量[ 1 0 0 0 ], hardmax 函数会观察 z 的元素,然后在 z 中最大元素的位置放上 1,其它位置放上 0。<br>        * 反向传播<br>$$<br>\frac{\partial{L}}{\partial{z}} = dz^{[l]} = \hat{y} - y<br>$$</p>
 
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://example.com/2023/07/25/third-git-blog/" data-id="clkki76rx000758h7ao944w04" class="article-share-link" data-share="baidu" data-title="第二章 改善深层神经网络：超参数调试、正则化及优化">Share</a>
+        <a data-url="http://example.com/2023/07/25/third-git-blog/" data-id="clkkq8uu50004hsh74o9o4hwc" class="article-share-link" data-share="baidu" data-title="第二章 改善深层神经网络：超参数调试、正则化及优化">Share</a>
       
 
       

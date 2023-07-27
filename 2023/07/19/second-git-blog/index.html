@@ -112,152 +112,92 @@
 <p>  其中输入特征被竖直堆叠起来，叫做神经网络的输入层。另外一层称为隐藏层；最后一层只由一个结点构成，这个被称做输出层，它负责产生预测值。<br>  神经网络的三个要点描述为以下：</p>
 <h3 id="输入（Input）-X"><a href="#输入（Input）-X" class="headerlink" title="输入（Input）:X"></a>输入（Input）:X</h3><h3 id="输出-（Output-Y"><a href="#输出-（Output-Y" class="headerlink" title="输出 （Output):Y"></a>输出 （Output):Y</h3><h3 id="隐藏层"><a href="#隐藏层" class="headerlink" title="隐藏层"></a>隐藏层</h3><h3 id="激活函数-（Activation-Function）"><a href="#激活函数-（Activation-Function）" class="headerlink" title="激活函数 （Activation Function）"></a>激活函数 （Activation Function）</h3><pre><code>使用一个神经网络时，需要决定使用哪种激活函数用在隐藏层上，哪种用在输出节点上。文中介绍比较多的是sigmoid激活函数，实际应用中其他的激活函数效果会更好。激活函数实现了样本特征的非线形变换，如果没有非线形变换，可以证明即使有再多道隐层，神经网络也会“坍缩”成为逻辑回归。
 
-常用激活函数：
-</code></pre><ul>
-<li><p>Tanh</p>
-<script type="math/tex; mode=display">
-g(z) = tanh(z)
-      =\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} \\
-      g'(z) = 1 -(tanh(z))^{2}</script></li>
+常用激活函数：</code></pre><ul>
+<li><p>Tanh<br>$$<br>g(z) = tanh(z)</p>
+<pre><code>=\frac&#123;e^&#123;z&#125;-e^&#123;-z&#125;&#125;&#123;e^&#123;z&#125;+e^&#123;-z&#125;&#125; \\
+g&apos;(z) = 1 -(tanh(z))^&#123;2&#125;</code></pre><p>$$</p>
+</li>
 <li><p>ReLU</p>
 </li>
 </ul>
-<script type="math/tex; mode=display">
-g(z) = max(0, z)
-    g'(z) = 
-
-    \begin{cases}
-    0 & \text{if} \ z < 0  \\
-    1 & \text{if} \ z ≥ 0
-    \end{cases}</script><ul>
+<p>$$<br>g(z) = max(0, z)<br>    g’(z) = </p>
+<pre><code>\begin&#123;cases&#125;
+0 &amp; \text&#123;if&#125; \ z &lt; 0  \\
+1 &amp; \text&#123;if&#125; \ z ≥ 0
+\end&#123;cases&#125;</code></pre><p>$$</p>
+<ul>
 <li>Leaky ReLU</li>
 </ul>
-<script type="math/tex; mode=display">
-g(z) = max(0.01, z) \\
-g'(z) = \begin{cases}
-0.01 & \text{ if}\ z \lt 0 \\
-1 & \text{ if}\ z \ge 0
-\end{cases}</script><ul>
+<p>$$<br>g(z) = max(0.01, z) \<br>g’(z) = \begin{cases}<br>0.01 &amp; \text{ if}\ z \lt 0 \<br>1 &amp; \text{ if}\ z \ge 0<br>\end{cases}<br>$$</p>
+<ul>
 <li>sigmoid</li>
 </ul>
-<script type="math/tex; mode=display">
-g(z) = \frac{1}{1 + e^{-z}} \\
-g'(z) = g(z) \times (1 - g(z))</script><ul>
+<p>$$<br>g(z) = \frac{1}{1 + e^{-z}} \<br>g’(z) = g(z) \times (1 - g(z))<br>$$</p>
+<ul>
 <li>softmax</li>
 </ul>
-<script type="math/tex; mode=display">
-\text{for } x \in \mathbb{R}^{1\times n} \text{,     } softmax(x) = softmax(\begin{bmatrix}
-      x_1  &&
-      x_2 &&
-      ...  &&
-      x_n  
-    \end{bmatrix}) =
-     \begin{bmatrix}
-       \frac{e^{x_1}}{\sum_{j}e^{x_j}}  &&
-      \frac{e^{x_2}}{\sum_{j}e^{x_j}}  &&
-      ...  &&
-      \frac{e^{x_n}}{\sum_{j}e^{x_j}} 
-    \end{bmatrix}  \\
-    \\</script><script type="math/tex; mode=display">
-softmax(x) = softmax
-    \begin{bmatrix}
-      x_{11} & x_{12} & x_{13} & \dots  & x_{1n} \\
-      x_{21} & x_{22} & x_{23} & \dots  & x_{2n} \\
-      \vdots & \vdots & \vdots & \ddots & \vdots \\
-      x_{m1} & x_{m2} & x_{m3} & \dots  & x_{mn}
-    \end{bmatrix} = 
-    \begin{bmatrix}
-      \frac{e^{x_{11}}}{\sum_{j}e^{x_{1j}}} & \frac{e^{x_{12}}}{\sum_{j}e^{x_{1j}}} & \frac{e^{x_{13}}}{\sum_{j}e^{x_{1j}}} & \dots  & \frac{e^{x_{1n}}}{\sum_{j}e^{x_{1j}}} \\
-      \frac{e^{x_{21}}}{\sum_{j}e^{x_{2j}}} & \frac{e^{x_{22}}}{\sum_{j}e^{x_{2j}}} & \frac{e^{x_{23}}}{\sum_{j}e^{x_{2j}}} & \dots  & \frac{e^{x_{2n}}}{\sum_{j}e^{x_{2j}}} \\
-      \vdots & \vdots & \vdots & \ddots & \vdots \\
-      \frac{e^{x_{m1}}}{\sum_{j}e^{x_{mj}}} & \frac{e^{x_{m2}}}{\sum_{j}e^{x_{mj}}} & \frac{e^{x_{m3}}}{\sum_{j}e^{x_{mj}}} & \dots  & \frac{e^{x_{mn}}}{\sum_{j}e^{x_{mj}}}
-    \end{bmatrix} \\
-  = 
-    \begin{pmatrix}
-      softmax\text{(first row of x)}  \\
-      softmax\text{(second row of x)} \\
-      ...  \\
-      softmax\text{(last row of x)} \\
-    \end{pmatrix}</script><h3 id="损失函数-Loss-Function"><a href="#损失函数-Loss-Function" class="headerlink" title="损失函数 (Loss Function)"></a>损失函数 (Loss Function)</h3><pre><code>又叫误差函数，用来衡量算法的运行情况，通过这个L称为的损失函数，衡量预测输出值和实际值有多接近。一般用预测值和实际值的平方差或者它们平方差的一半。
-              *   L1 损失函数
-</code></pre><script type="math/tex; mode=display">
-\begin{align*}         & L_1(\hat{y},y) = \sum_{i=0}^m|(y^{(i)} - \hat{y}^{(i)})|          \end{align*}</script><pre><code>*   L2 损失函数
-</code></pre><script type="math/tex; mode=display">
-\begin{align*}         & L_2(\hat{y},y) = \sum_{i=0}^m(y^{(i)} - \hat{y}^{(i)})^2          \end{align*}</script><pre><code>但通常逻辑回归中，会使用下面的L，
-</code></pre><script type="math/tex; mode=display">
-L(a, y) = -(ylog(a) + (1-y)log(1-a))
-    L'(a,y) = \frac{1-y}{1-a} - \frac{y}{a}</script><pre><code>这个的好处，以及这门课很多函数也和这个原理类似，就是如果y等于1，尽可能让$\hat&#123;y&#125;$变大，
-如果y等于0，尽可能让$\hat&#123;y&#125;$变小
-</code></pre><h3 id="代价函数-Cost-Function"><a href="#代价函数-Cost-Function" class="headerlink" title="代价函数 (Cost Function)"></a>代价函数 (Cost Function)</h3><script type="math/tex; mode=display">
-\frac{1}{m}\sum_{i=1}^{m}L(a^{(i)}, y^{(i)})</script><pre><code>损失函数()适用于单个训练样本，代价函数是参数的总代价
-</code></pre><ul>
+<p>$$<br>\text{for } x \in \mathbb{R}^{1\times n} \text{,     } softmax(x) = softmax(\begin{bmatrix}<br>      x_1  &amp;&amp;<br>      x_2 &amp;&amp;<br>      …  &amp;&amp;<br>      x_n<br>    \end{bmatrix}) =<br>     \begin{bmatrix}<br>       \frac{e^{x_1}}{\sum_{j}e^{x_j}}  &amp;&amp;<br>      \frac{e^{x_2}}{\sum_{j}e^{x_j}}  &amp;&amp;<br>      …  &amp;&amp;<br>      \frac{e^{x_n}}{\sum_{j}e^{x_j}}<br>    \end{bmatrix}  \<br>    \<br>$$</p>
+<p>$$<br>softmax(x) = softmax<br>    \begin{bmatrix}<br>      x_{11} &amp; x_{12} &amp; x_{13} &amp; \dots  &amp; x_{1n} \<br>      x_{21} &amp; x_{22} &amp; x_{23} &amp; \dots  &amp; x_{2n} \<br>      \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \<br>      x_{m1} &amp; x_{m2} &amp; x_{m3} &amp; \dots  &amp; x_{mn}<br>    \end{bmatrix} =<br>    \begin{bmatrix}<br>      \frac{e^{x_{11}}}{\sum_{j}e^{x_{1j}}} &amp; \frac{e^{x_{12}}}{\sum_{j}e^{x_{1j}}} &amp; \frac{e^{x_{13}}}{\sum_{j}e^{x_{1j}}} &amp; \dots  &amp; \frac{e^{x_{1n}}}{\sum_{j}e^{x_{1j}}} \<br>      \frac{e^{x_{21}}}{\sum_{j}e^{x_{2j}}} &amp; \frac{e^{x_{22}}}{\sum_{j}e^{x_{2j}}} &amp; \frac{e^{x_{23}}}{\sum_{j}e^{x_{2j}}} &amp; \dots  &amp; \frac{e^{x_{2n}}}{\sum_{j}e^{x_{2j}}} \<br>      \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \<br>      \frac{e^{x_{m1}}}{\sum_{j}e^{x_{mj}}} &amp; \frac{e^{x_{m2}}}{\sum_{j}e^{x_{mj}}} &amp; \frac{e^{x_{m3}}}{\sum_{j}e^{x_{mj}}} &amp; \dots  &amp; \frac{e^{x_{mn}}}{\sum_{j}e^{x_{mj}}}<br>    \end{bmatrix} \<br>  =<br>    \begin{pmatrix}<br>      softmax\text{(first row of x)}  \<br>      softmax\text{(second row of x)} \<br>      …  \<br>      softmax\text{(last row of x)} \<br>    \end{pmatrix}<br>$$</p>
+<h3 id="损失函数-Loss-Function"><a href="#损失函数-Loss-Function" class="headerlink" title="损失函数 (Loss Function)"></a>损失函数 (Loss Function)</h3><pre><code>又叫误差函数，用来衡量算法的运行情况，通过这个L称为的损失函数，衡量预测输出值和实际值有多接近。一般用预测值和实际值的平方差或者它们平方差的一半。
+              *   L1 损失函数</code></pre><p>$$<br>\begin{align<em>}         &amp; L_1(\hat{y},y) = \sum_{i=0}^m|(y^{(i)} - \hat{y}^{(i)})|          \end{align</em>}<br>$$</p>
+<pre><code>*   L2 损失函数</code></pre><p>$$<br>\begin{align<em>}         &amp; L_2(\hat{y},y) = \sum_{i=0}^m(y^{(i)} - \hat{y}^{(i)})^2          \end{align</em>}<br>$$</p>
+<pre><code>但通常逻辑回归中，会使用下面的L，</code></pre><p>$$<br>L(a, y) = -(ylog(a) + (1-y)log(1-a))<br>    L’(a,y) = \frac{1-y}{1-a} - \frac{y}{a}<br>$$</p>
+<pre><code>这个的好处，以及这门课很多函数也和这个原理类似，就是如果y等于1，尽可能让$\hat&#123;y&#125;$变大，
+如果y等于0，尽可能让$\hat&#123;y&#125;$变小</code></pre><h3 id="代价函数-Cost-Function"><a href="#代价函数-Cost-Function" class="headerlink" title="代价函数 (Cost Function)"></a>代价函数 (Cost Function)</h3><p>$$<br>\frac{1}{m}\sum_{i=1}^{m}L(a^{(i)}, y^{(i)})<br>$$</p>
+<pre><code>损失函数()适用于单个训练样本，代价函数是参数的总代价</code></pre><ul>
 <li>参数()：$w$, $b$*</li>
 </ul>
 <h2 id="逻辑回归与神经网络"><a href="#逻辑回归与神经网络" class="headerlink" title="逻辑回归与神经网络"></a>逻辑回归与神经网络</h2><hr>
 <p>关于逻辑回归和神经网络类比，有以下的结论：其中逻辑回归可以看作是单层（没有隐藏层）的二分类神经网络，其中<br>  输入特征向量X，预测目标为0或1<br>  所以逻辑回归是给出输入x以及参数w和b之后，如何输出预测值$\hat{y}$。</p>
 <p>  神经网络可以从两个方面看作是逻辑回归的叠加：</p>
 <ul>
-<li>层数的叠加<br>神经网络有多个隐层，每层有自己独立的参数。</li>
+<li><p>层数的叠加<br>神经网络有多个隐层，每层有自己独立的参数。</p>
+</li>
 <li><p>特征参数的叠加<br>神经网络每一层在传入各层激活函数前，会进行多种不同的线形变换，每种变换经激活函数计算后形成该层一个神经元，一个神经元对应一次逻辑回归计算，同时也对应了参数矩阵一行。</p>
 <p>以下是关于逻辑回归的训练目标与训练过程的介绍</p>
 </li>
 </ul>
 <h3 id="训练目标"><a href="#训练目标" class="headerlink" title="训练目标"></a>训练目标</h3><hr>
 <p>  逻辑回归作为二分类算法，其损失函数的数学意义可以理解为预测值$\hat{y}$为真实值$y$的概率，即：</p>
-<script type="math/tex; mode=display">
-y = 1: p(y|x) =\hat{y}y = 0: p(y|x) = 1 - \hat{y}</script><pre><code>将两个公式合并为一个公式：
-</code></pre><script type="math/tex; mode=display">
-p(y|x) = \hat{y}^{y}(1-\hat{y})^{(1-y)}</script><pre><code>基于上述公式，我们需要 p(y|x) 所得概率值越大越好(从而达到预测值与真实值逼近的目的)。为避免进行指数运算所带来的复杂性，利用对数函数的严格单调性，对上述公式两边同时取对数，转换为下面的公式：
-</code></pre><script type="math/tex; mode=display">
-\log{p(y|x)} = y\log{\hat{y}} + (1-y)\log(1-\hat{y})
-    = -L(\hat{y}, y)</script><pre><code>概率值越大，损失值应该越小，二者应是相反关系且概率值都是小于1，其对数为负，所以损失值取负。
-训练的目标就是通过寻找参数$w$, $b$,以获得最小的损失值。每次迭代时参数更新公式为：
-</code></pre><script type="math/tex; mode=display">
-w = w - \alpha\times dw
-    b = b - \alpha\times db</script><h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><hr>
+<p>$$<br>y = 1: p(y|x) =\hat{y}y = 0: p(y|x) = 1 - \hat{y}<br>$$</p>
+<pre><code>将两个公式合并为一个公式：</code></pre><p>$$<br>p(y|x) = \hat{y}^{y}(1-\hat{y})^{(1-y)}<br>$$</p>
+<pre><code>基于上述公式，我们需要 p(y|x) 所得概率值越大越好(从而达到预测值与真实值逼近的目的)。为避免进行指数运算所带来的复杂性，利用对数函数的严格单调性，对上述公式两边同时取对数，转换为下面的公式：</code></pre><p>$$<br>\log{p(y|x)} = y\log{\hat{y}} + (1-y)\log(1-\hat{y})<br>    = -L(\hat{y}, y)<br>$$</p>
+<pre><code>概率值越大，损失值应该越小，二者应是相反关系且概率值都是小于1，其对数为负，所以损失值取负。
+训练的目标就是通过寻找参数$w$, $b$,以获得最小的损失值。每次迭代时参数更新公式为：</code></pre><p>$$<br>w = w - \alpha\times dw<br>    b = b - \alpha\times db<br>$$</p>
+<h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><hr>
 <p>   寻找最优参数过程基于凸函数的梯度下降()原理，通过对训练集迭代进行“正向传播()”和“反向传播()”完成。</p>
 <pre><code>#### 正向传播
 根据样本数据$x$推导出$hat&#123;y&#125; $,并保留中间值$z$用于反向传播的计算；
-#### 反向传播
-</code></pre><script type="math/tex; mode=display">
-\frac{da}{dz} = a \times(1 - a)\\
-    da = \frac{dL}{da} = \frac{1-y}{1-a} - \frac{y}{a} \\
-    dz =\frac{dL}{dz} = \frac{dL}{da} \times \frac{da}{dz} = a - y\\
-
-    \frac{dz}{dw} = x\\
-    \frac{dz}{db} = 1 \\
-    dw = \frac{dL}{dw} = \frac{dL}{dz} \times \frac{dz}{dw} = (a-y) \times x \\
-    db = \frac{dL}{db} = \frac{dL}{dz} \times \frac{dz}{db} = a - y</script><ul>
+#### 反向传播</code></pre><p>$$<br>\frac{da}{dz} = a \times(1 - a)\<br>    da = \frac{dL}{da} = \frac{1-y}{1-a} - \frac{y}{a} \<br>    dz =\frac{dL}{dz} = \frac{dL}{da} \times \frac{da}{dz} = a - y\\</p>
+<pre><code>\frac&#123;dz&#125;&#123;dw&#125; = x\\
+\frac&#123;dz&#125;&#123;db&#125; = 1 \\
+dw = \frac&#123;dL&#125;&#123;dw&#125; = \frac&#123;dL&#125;&#123;dz&#125; \times \frac&#123;dz&#125;&#123;dw&#125; = (a-y) \times x \\
+db = \frac&#123;dL&#125;&#123;db&#125; = \frac&#123;dL&#125;&#123;dz&#125; \times \frac&#123;dz&#125;&#123;db&#125; = a - y</code></pre><p>$$</p>
+<ul>
 <li>多样本向量化计算<br>使用向量化计算比循环运算快约400倍。<br>输入为一个$（n，m）$的矩阵，m列的列向量，每个样本为$n$个特征值；<br>参数$w$维度为：（1，n),参数$b$维度为：（1，1)</li>
 </ul>
 <h2 id="神经网络训练"><a href="#神经网络训练" class="headerlink" title="神经网络训练"></a>神经网络训练</h2><h3 id="向量化运算"><a href="#向量化运算" class="headerlink" title="向量化运算"></a>向量化运算</h3><p>  向量在网络各层计算过程中的维度规律：</p>
 <pre><code>* 各层样本个数保持不变，即：$A^&#123;[i]&#125;$、$Z^&#123;[i]&#125;$ 的列值均保持为m(样本数)，变化的是各层每个样本的特征数(行数)
 * 参数 $W^&#123;[i]&#125;$的维度与样本数无关，行为本层需生成的样本特征数，列为上层特征数；$B^&#123;[i]&#125;$为本层特征数，一列
-* 对于反向传播时的导数向量同样如此。
-</code></pre><h3 id="参数初始化"><a href="#参数初始化" class="headerlink" title="参数初始化"></a>参数初始化</h3><pre><code>#### 逻辑回归 参数初始化
+* 对于反向传播时的导数向量同样如此。</code></pre><h3 id="参数初始化"><a href="#参数初始化" class="headerlink" title="参数初始化"></a>参数初始化</h3><pre><code>#### 逻辑回归 参数初始化
   不存在中间隐层，输出层也只有一个神经元，参数可以初始化为任意值，考虑到激活函数曲线的斜率特性，通常都初始化为0。
 #### 神经网络 参数初始化
   神经网络因隐层存在多个神经元，如参数初始化为0，则可证明每个神经元作用是等价的，因此，神经网络参数需初始化为随机值，且乘以一个较小的数，如：0.01，以使计算从斜率较大的地方开始。
 
-* 另一项AI通用技术-数据归一化：训练数据归一化后将提高梯度下降的性能。举例, 如果：
-</code></pre><script type="math/tex; mode=display">
-x = \begin{bmatrix}
-      0 & 3 & 4\\
-      2 & 6 & 4 \\
-      \end{bmatrix}\\
+* 另一项AI通用技术-数据归一化：训练数据归一化后将提高梯度下降的性能。举例, 如果：</code></pre><p>$$<br>x = \begin{bmatrix}<br>      0 &amp; 3 &amp; 4\<br>      2 &amp; 6 &amp; 4 \<br>      \end{bmatrix}\\</p>
+<pre><code>\text&#123;then&#125;\\ \| x\| = np.linalg.norm(x, axis = 1, keepdims = True)
 
-    \text{then}\\ \| x\| = np.linalg.norm(x, axis = 1, keepdims = True)
+= \begin&#123;bmatrix&#125;
+  5\\
+  \sqrt&#123;56&#125; \\
+  \end&#123;bmatrix&#125;
 
-    = \begin{bmatrix}
-      5\\
-      \sqrt{56} \\
-      \end{bmatrix}
-
-    x\_normalized = \frac{x}{\| x\|} =
-      \begin{bmatrix}
-      0 & \frac{3}{5} & \frac{4}{5} \\
-      \frac{2}{\sqrt{56}} & \frac{6}{\sqrt{56}} & \frac{4}{\sqrt{56}} \\
-      \end{bmatrix}</script><h3 id="深层神经网络"><a href="#深层神经网络" class="headerlink" title="深层神经网络"></a>深层神经网络</h3><p>  上述介绍了神经网络的训练目标和训练过程，接下来我们来介绍，为什么要使用深层神经网络？<br>    过去实践经验，有些函数，只有非常深的神经网络能学会，而浅的模型办不到。<br>    同样课堂上将深度神经网络和人类大脑相比较，即先探测简单的东西（开始的层获取底层特征），组合起来才能探测复杂的物体（底层特征组合后的特征），从功能上讲，浅层网络也能达到同样效果，但是计算的效率较低。<br>    有两个特点<br>    small: 隐藏单元的数量相对较少<br>    deep: 隐藏层数目比较多<br>    深层网络隐藏单元数量相对较少，隐藏层数较多。如果浅层的网络想要达到同样的计算结果则需要指数级增长的单元数量才能达到。</p>
+x\_normalized = \frac&#123;x&#125;&#123;\| x\|&#125; =
+  \begin&#123;bmatrix&#125;
+  0 &amp; \frac&#123;3&#125;&#123;5&#125; &amp; \frac&#123;4&#125;&#123;5&#125; \\
+  \frac&#123;2&#125;&#123;\sqrt&#123;56&#125;&#125; &amp; \frac&#123;6&#125;&#123;\sqrt&#123;56&#125;&#125; &amp; \frac&#123;4&#125;&#123;\sqrt&#123;56&#125;&#125; \\
+  \end&#123;bmatrix&#125;</code></pre><p>$$</p>
+<h3 id="深层神经网络"><a href="#深层神经网络" class="headerlink" title="深层神经网络"></a>深层神经网络</h3><p>  上述介绍了神经网络的训练目标和训练过程，接下来我们来介绍，为什么要使用深层神经网络？<br>    过去实践经验，有些函数，只有非常深的神经网络能学会，而浅的模型办不到。<br>    同样课堂上将深度神经网络和人类大脑相比较，即先探测简单的东西（开始的层获取底层特征），组合起来才能探测复杂的物体（底层特征组合后的特征），从功能上讲，浅层网络也能达到同样效果，但是计算的效率较低。<br>    有两个特点<br>    small: 隐藏单元的数量相对较少<br>    deep: 隐藏层数目比较多<br>    深层网络隐藏单元数量相对较少，隐藏层数较多。如果浅层的网络想要达到同样的计算结果则需要指数级增长的单元数量才能达到。</p>
 <ul>
 <li>参数      超参数：<br>算法中的学习率：learning rate $\alpha$<br>梯度下降循环的数量:n<br>隐藏层数目：L<br>隐藏层单元数目(): $n^[l]$<br>激活函数的选择<br>需要操作者自行设置的，这些数字实际上控制了最后的参数$w$, $b$，称之为超参数<br>按下来第二门课将会详细介绍参数的选择、正则化以及优化。</li>
 </ul>
@@ -266,7 +206,7 @@ x = \begin{bmatrix}
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://example.com/2023/07/19/second-git-blog/" data-id="clkki76rt000258h71nllgvdm" class="article-share-link" data-share="baidu" data-title="第一章 神经网络和机器学习">Share</a>
+        <a data-url="http://example.com/2023/07/19/second-git-blog/" data-id="clkkq8uu40003hsh7dru84a6i" class="article-share-link" data-share="baidu" data-title="第一章 神经网络和机器学习">Share</a>
       
 
       
