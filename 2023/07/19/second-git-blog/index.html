@@ -15,7 +15,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2023/07/19/second-git-blog/1689757652003.png">
 <meta property="article:published_time" content="2023-07-19T08:36:59.000Z">
-<meta property="article:modified_time" content="2023-07-25T07:36:09.761Z">
+<meta property="article:modified_time" content="2023-07-27T08:03:21.047Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="深度挖掘">
 <meta name="twitter:card" content="summary">
@@ -113,22 +113,16 @@
 <h3 id="输入（Input）-X"><a href="#输入（Input）-X" class="headerlink" title="输入（Input）:X"></a>输入（Input）:X</h3><h3 id="输出-（Output-Y"><a href="#输出-（Output-Y" class="headerlink" title="输出 （Output):Y"></a>输出 （Output):Y</h3><h3 id="隐藏层"><a href="#隐藏层" class="headerlink" title="隐藏层"></a>隐藏层</h3><h3 id="激活函数-（Activation-Function）"><a href="#激活函数-（Activation-Function）" class="headerlink" title="激活函数 （Activation Function）"></a>激活函数 （Activation Function）</h3><pre><code>使用一个神经网络时，需要决定使用哪种激活函数用在隐藏层上，哪种用在输出节点上。文中介绍比较多的是sigmoid激活函数，实际应用中其他的激活函数效果会更好。激活函数实现了样本特征的非线形变换，如果没有非线形变换，可以证明即使有再多道隐层，神经网络也会“坍缩”成为逻辑回归。
 
 常用激活函数：</code></pre><ul>
-<li><p>Tanh<br>$$<br>g(z) = tanh(z)</p>
-<pre><code>=\frac&#123;e^&#123;z&#125;-e^&#123;-z&#125;&#125;&#123;e^&#123;z&#125;+e^&#123;-z&#125;&#125; \\
-g&apos;(z) = 1 -(tanh(z))^&#123;2&#125;</code></pre><p>$$</p>
+<li><p>Tanh<br>$$<br>g(z) = tanh(z)<br>=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} \<br>g’(z) = 1 -(tanh(z))^{2}<br>$$</p>
 </li>
 <li><p>ReLU</p>
 </li>
 </ul>
-<p>$$<br>g(z) = max(0, z)<br>    g’(z) = </p>
-<pre><code>\begin&#123;cases&#125;
-0 &amp; \text&#123;if&#125; \ z &lt; 0  \\
-1 &amp; \text&#123;if&#125; \ z ≥ 0
-\end&#123;cases&#125;</code></pre><p>$$</p>
+<p>$$<br>g(z) = max(0, z) \<br>g’(z) = \begin{cases}<br>0 &amp; \text if  z \lt 0 \<br>1 &amp; \text if  z \ge 0<br>\end{cases}<br>$$</p>
 <ul>
 <li>Leaky ReLU</li>
 </ul>
-<p>$$<br>g(z) = max(0.01, z) \<br>g’(z) = \begin{cases}<br>0.01 &amp; \text{ if}\ z \lt 0 \<br>1 &amp; \text{ if}\ z \ge 0<br>\end{cases}<br>$$</p>
+<p>$$<br>g(z) = max(0.01, z) \<br>g’(z) = \begin{cases}<br>0.01 &amp; \text if  z \lt 0 \<br>1 &amp; \text if z \ge 0<br>\end{cases}<br>$$</p>
 <ul>
 <li>sigmoid</li>
 </ul>
@@ -139,8 +133,8 @@ g&apos;(z) = 1 -(tanh(z))^&#123;2&#125;</code></pre><p>$$</p>
 <p>$$<br>\text{for } x \in \mathbb{R}^{1\times n} \text{,     } softmax(x) = softmax(\begin{bmatrix}<br>      x_1  &amp;&amp;<br>      x_2 &amp;&amp;<br>      …  &amp;&amp;<br>      x_n<br>    \end{bmatrix}) =<br>     \begin{bmatrix}<br>       \frac{e^{x_1}}{\sum_{j}e^{x_j}}  &amp;&amp;<br>      \frac{e^{x_2}}{\sum_{j}e^{x_j}}  &amp;&amp;<br>      …  &amp;&amp;<br>      \frac{e^{x_n}}{\sum_{j}e^{x_j}}<br>    \end{bmatrix}  \<br>    \<br>$$</p>
 <p>$$<br>softmax(x) = softmax<br>    \begin{bmatrix}<br>      x_{11} &amp; x_{12} &amp; x_{13} &amp; \dots  &amp; x_{1n} \<br>      x_{21} &amp; x_{22} &amp; x_{23} &amp; \dots  &amp; x_{2n} \<br>      \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \<br>      x_{m1} &amp; x_{m2} &amp; x_{m3} &amp; \dots  &amp; x_{mn}<br>    \end{bmatrix} =<br>    \begin{bmatrix}<br>      \frac{e^{x_{11}}}{\sum_{j}e^{x_{1j}}} &amp; \frac{e^{x_{12}}}{\sum_{j}e^{x_{1j}}} &amp; \frac{e^{x_{13}}}{\sum_{j}e^{x_{1j}}} &amp; \dots  &amp; \frac{e^{x_{1n}}}{\sum_{j}e^{x_{1j}}} \<br>      \frac{e^{x_{21}}}{\sum_{j}e^{x_{2j}}} &amp; \frac{e^{x_{22}}}{\sum_{j}e^{x_{2j}}} &amp; \frac{e^{x_{23}}}{\sum_{j}e^{x_{2j}}} &amp; \dots  &amp; \frac{e^{x_{2n}}}{\sum_{j}e^{x_{2j}}} \<br>      \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \<br>      \frac{e^{x_{m1}}}{\sum_{j}e^{x_{mj}}} &amp; \frac{e^{x_{m2}}}{\sum_{j}e^{x_{mj}}} &amp; \frac{e^{x_{m3}}}{\sum_{j}e^{x_{mj}}} &amp; \dots  &amp; \frac{e^{x_{mn}}}{\sum_{j}e^{x_{mj}}}<br>    \end{bmatrix} \<br>  =<br>    \begin{pmatrix}<br>      softmax\text{(first row of x)}  \<br>      softmax\text{(second row of x)} \<br>      …  \<br>      softmax\text{(last row of x)} \<br>    \end{pmatrix}<br>$$</p>
 <h3 id="损失函数-Loss-Function"><a href="#损失函数-Loss-Function" class="headerlink" title="损失函数 (Loss Function)"></a>损失函数 (Loss Function)</h3><pre><code>又叫误差函数，用来衡量算法的运行情况，通过这个L称为的损失函数，衡量预测输出值和实际值有多接近。一般用预测值和实际值的平方差或者它们平方差的一半。
-              *   L1 损失函数</code></pre><p>$$<br>\begin{align<em>}         &amp; L_1(\hat{y},y) = \sum_{i=0}^m|(y^{(i)} - \hat{y}^{(i)})|          \end{align</em>}<br>$$</p>
-<pre><code>*   L2 损失函数</code></pre><p>$$<br>\begin{align<em>}         &amp; L_2(\hat{y},y) = \sum_{i=0}^m(y^{(i)} - \hat{y}^{(i)})^2          \end{align</em>}<br>$$</p>
+  *   L1 损失函数</code></pre><p>$$<br>L_1(\hat{y},y) = \sum_{i=0}^m|(y^{(i)} - \hat{y}^{(i)})|<br>$$</p>
+<pre><code>*   L2 损失函数</code></pre><p>$$<br>L_2(\hat{y},y) = \sum_{i=0}^m(y^{(i)} - \hat{y}^{(i)})^2<br>$$</p>
 <pre><code>但通常逻辑回归中，会使用下面的L，</code></pre><p>$$<br>L(a, y) = -(ylog(a) + (1-y)log(1-a))<br>    L’(a,y) = \frac{1-y}{1-a} - \frac{y}{a}<br>$$</p>
 <pre><code>这个的好处，以及这门课很多函数也和这个原理类似，就是如果y等于1，尽可能让$\hat&#123;y&#125;$变大，
 如果y等于0，尽可能让$\hat&#123;y&#125;$变小</code></pre><h3 id="代价函数-Cost-Function"><a href="#代价函数-Cost-Function" class="headerlink" title="代价函数 (Cost Function)"></a>代价函数 (Cost Function)</h3><p>$$<br>\frac{1}{m}\sum_{i=1}^{m}L(a^{(i)}, y^{(i)})<br>$$</p>
@@ -166,47 +160,33 @@ g&apos;(z) = 1 -(tanh(z))^&#123;2&#125;</code></pre><p>$$</p>
 训练的目标就是通过寻找参数$w$, $b$,以获得最小的损失值。每次迭代时参数更新公式为：</code></pre><p>$$<br>w = w - \alpha\times dw<br>    b = b - \alpha\times db<br>$$</p>
 <h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3><hr>
 <p>   寻找最优参数过程基于凸函数的梯度下降()原理，通过对训练集迭代进行“正向传播()”和“反向传播()”完成。</p>
-<pre><code>#### 正向传播
-根据样本数据$x$推导出$hat&#123;y&#125; $,并保留中间值$z$用于反向传播的计算；
-#### 反向传播</code></pre><p>$$<br>\frac{da}{dz} = a \times(1 - a)\<br>    da = \frac{dL}{da} = \frac{1-y}{1-a} - \frac{y}{a} \<br>    dz =\frac{dL}{dz} = \frac{dL}{da} \times \frac{da}{dz} = a - y\\</p>
-<pre><code>\frac&#123;dz&#125;&#123;dw&#125; = x\\
-\frac&#123;dz&#125;&#123;db&#125; = 1 \\
-dw = \frac&#123;dL&#125;&#123;dw&#125; = \frac&#123;dL&#125;&#123;dz&#125; \times \frac&#123;dz&#125;&#123;dw&#125; = (a-y) \times x \\
-db = \frac&#123;dL&#125;&#123;db&#125; = \frac&#123;dL&#125;&#123;dz&#125; \times \frac&#123;dz&#125;&#123;db&#125; = a - y</code></pre><p>$$</p>
+<h4 id="正向传播"><a href="#正向传播" class="headerlink" title="正向传播"></a>正向传播</h4><p>$$<br>    \text 根据样本数据 x 推导出 \hat{y},并保留中间值z用于反向传播的计算；<br>$$</p>
+<h4 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h4><p>$$<br>\frac{da}{dz} = a \times(1 - a)\\<br>    da = \frac{dL}{da} = \frac{1-y}{1-a} - \frac{y}{a} \\<br>    dz =\frac{dL}{dz} = \frac{dL}{da} \times \frac{da}{dz} = a - y\\<br>    \frac{dz}{dw} = x\\<br>    \frac{dz}{db} = 1 \\<br>    dw = \frac{dL}{dw} = \frac{dL}{dz} \times \frac{dz}{dw} = (a-y) \times x \\<br>    db = \frac{dL}{db} = \frac{dL}{dz} \times \frac{dz}{db} = a - y<br>$$</p>
 <ul>
-<li>多样本向量化计算<br>使用向量化计算比循环运算快约400倍。<br>输入为一个$（n，m）$的矩阵，m列的列向量，每个样本为$n$个特征值；<br>参数$w$维度为：（1，n),参数$b$维度为：（1，1)</li>
+<li>多样本向量化计算<br>使用向量化计算比循环运算快约400倍。<br>$$<br>$$<br>输入为一个$（n，m）$的矩阵，m列的列向量，每个样本为$n$个特征值；<br>参数$w$维度为：（1，n),参数$b$维度为：（1，1)</li>
 </ul>
-<h2 id="神经网络训练"><a href="#神经网络训练" class="headerlink" title="神经网络训练"></a>神经网络训练</h2><h3 id="向量化运算"><a href="#向量化运算" class="headerlink" title="向量化运算"></a>向量化运算</h3><p>  向量在网络各层计算过程中的维度规律：</p>
-<pre><code>* 各层样本个数保持不变，即：$A^&#123;[i]&#125;$、$Z^&#123;[i]&#125;$ 的列值均保持为m(样本数)，变化的是各层每个样本的特征数(行数)
-* 参数 $W^&#123;[i]&#125;$的维度与样本数无关，行为本层需生成的样本特征数，列为上层特征数；$B^&#123;[i]&#125;$为本层特征数，一列
-* 对于反向传播时的导数向量同样如此。</code></pre><h3 id="参数初始化"><a href="#参数初始化" class="headerlink" title="参数初始化"></a>参数初始化</h3><pre><code>#### 逻辑回归 参数初始化
+<h2 id="神经网络训练"><a href="#神经网络训练" class="headerlink" title="神经网络训练"></a>神经网络训练</h2><h3 id="向量化运算"><a href="#向量化运算" class="headerlink" title="向量化运算"></a>向量化运算</h3><p>  向量在网络各层计算过程中的维度规律：<br>$$<br>$$<br>    * 各层样本个数保持不变，即：$A^{[i]}$、$Z^{[i]}$ 的列值均保持为m(样本数)，变化的是各层每个样本的特征数(行数)<br>    * 参数 $W^{[i]}$的维度与样本数无关，行为本层需生成的样本特征数，列为上层特征数；$B^{[i]}$为本层特征数，一列<br>    * 对于反向传播时的导数向量同样如此。</p>
+<h3 id="参数初始化"><a href="#参数初始化" class="headerlink" title="参数初始化"></a>参数初始化</h3><pre><code>#### 逻辑回归 参数初始化
   不存在中间隐层，输出层也只有一个神经元，参数可以初始化为任意值，考虑到激活函数曲线的斜率特性，通常都初始化为0。
 #### 神经网络 参数初始化
   神经网络因隐层存在多个神经元，如参数初始化为0，则可证明每个神经元作用是等价的，因此，神经网络参数需初始化为随机值，且乘以一个较小的数，如：0.01，以使计算从斜率较大的地方开始。
 
-* 另一项AI通用技术-数据归一化：训练数据归一化后将提高梯度下降的性能。举例, 如果：</code></pre><p>$$<br>x = \begin{bmatrix}<br>      0 &amp; 3 &amp; 4\<br>      2 &amp; 6 &amp; 4 \<br>      \end{bmatrix}\\</p>
-<pre><code>\text&#123;then&#125;\\ \| x\| = np.linalg.norm(x, axis = 1, keepdims = True)
-
-= \begin&#123;bmatrix&#125;
-  5\\
-  \sqrt&#123;56&#125; \\
-  \end&#123;bmatrix&#125;
-
-x\_normalized = \frac&#123;x&#125;&#123;\| x\|&#125; =
-  \begin&#123;bmatrix&#125;
-  0 &amp; \frac&#123;3&#125;&#123;5&#125; &amp; \frac&#123;4&#125;&#123;5&#125; \\
-  \frac&#123;2&#125;&#123;\sqrt&#123;56&#125;&#125; &amp; \frac&#123;6&#125;&#123;\sqrt&#123;56&#125;&#125; &amp; \frac&#123;4&#125;&#123;\sqrt&#123;56&#125;&#125; \\
-  \end&#123;bmatrix&#125;</code></pre><p>$$</p>
+* 另一项AI通用技术-数据归一化：训练数据归一化后将提高梯度下降的性能。举例, 如果：</code></pre><p>$$<br>x = \begin{bmatrix}<br>      0 &amp; 3 &amp; 4\<br>      2 &amp; 6 &amp; 4 \<br>      \end{bmatrix}<br>$$</p>
+<p>then |x| = np.linalg.norm(x, axis = 1, keepdims = True)</p>
+<p>$$<br>    = \begin{bmatrix}<br>      5\<br>      \sqrt{56} \<br>      \end{bmatrix}<br>$$</p>
+<p>$$<br>    x_{normalized} = \frac{x}{|x|} =<br>      \begin{bmatrix}<br>      0 &amp; \frac{3}{5} &amp; \frac{4}{5} \<br>      \frac{2}{\sqrt{56}} &amp; \frac{6}{\sqrt{56}} &amp; \frac{4}{\sqrt{56}} \<br>      \end{bmatrix}<br>$$</p>
 <h3 id="深层神经网络"><a href="#深层神经网络" class="headerlink" title="深层神经网络"></a>深层神经网络</h3><p>  上述介绍了神经网络的训练目标和训练过程，接下来我们来介绍，为什么要使用深层神经网络？<br>    过去实践经验，有些函数，只有非常深的神经网络能学会，而浅的模型办不到。<br>    同样课堂上将深度神经网络和人类大脑相比较，即先探测简单的东西（开始的层获取底层特征），组合起来才能探测复杂的物体（底层特征组合后的特征），从功能上讲，浅层网络也能达到同样效果，但是计算的效率较低。<br>    有两个特点<br>    small: 隐藏单元的数量相对较少<br>    deep: 隐藏层数目比较多<br>    深层网络隐藏单元数量相对较少，隐藏层数较多。如果浅层的网络想要达到同样的计算结果则需要指数级增长的单元数量才能达到。</p>
 <ul>
-<li>参数      超参数：<br>算法中的学习率：learning rate $\alpha$<br>梯度下降循环的数量:n<br>隐藏层数目：L<br>隐藏层单元数目(): $n^[l]$<br>激活函数的选择<br>需要操作者自行设置的，这些数字实际上控制了最后的参数$w$, $b$，称之为超参数<br>按下来第二门课将会详细介绍参数的选择、正则化以及优化。</li>
+<li><p>参数      超参数：<br>$$<br>$$</p>
+<p>算法中的学习率：learning rate $\alpha$<br>梯度下降循环的数量:n<br>隐藏层数目：L<br>隐藏层单元数目(): $n^[l]$<br>激活函数的选择<br>需要操作者自行设置的，这些数字实际上控制了最后的参数$w$, $b$，称之为超参数<br>按下来第二门课将会详细介绍参数的选择、正则化以及优化。</p>
+</li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://example.com/2023/07/19/second-git-blog/" data-id="clkkrn2pt000328h7c9qwg5kz" class="article-share-link" data-share="baidu" data-title="第一章 神经网络和机器学习">Share</a>
+        <a data-url="http://example.com/2023/07/19/second-git-blog/" data-id="clkkvbagi00067kh7flc3et0q" class="article-share-link" data-share="baidu" data-title="第一章 神经网络和机器学习">Share</a>
       
 
       
