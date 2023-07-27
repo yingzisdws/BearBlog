@@ -4,14 +4,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Category: 参数调节 | 熊妞随手记</title>
+  <title>Hexo如何解决公式渲染问题 | 熊妞随手记</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="熊妞随手记">
-<meta property="og:url" content="http://example.com/categories/%E5%8F%82%E6%95%B0%E8%B0%83%E8%8A%82/index.html">
+  <meta name="description" content="背景  找到Hexo可以搭建博客框架，着实高兴了好几天，感觉以后可以把各种深度挖掘研究的笔记转移到这个战场了。但真正开始使用，发现了好多问题，其中最大的一个问题是公式渲染问题。网上找了各种资料，例如将现在hexo-renderer-marked换成hexo-renderer-kramed，这个我也有尝试，对于行间的公式渲染没有问题了，但是这个无法解决的是行内的公式，也没有找到特别好的办法。 方法简">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo如何解决公式渲染问题">
+<meta property="og:url" content="http://example.com/2023/07/27/hexo-equation-blog/index.html">
 <meta property="og:site_name" content="熊妞随手记">
+<meta property="og:description" content="背景  找到Hexo可以搭建博客框架，着实高兴了好几天，感觉以后可以把各种深度挖掘研究的笔记转移到这个战场了。但真正开始使用，发现了好多问题，其中最大的一个问题是公式渲染问题。网上找了各种资料，例如将现在hexo-renderer-marked换成hexo-renderer-kramed，这个我也有尝试，对于行间的公式渲染没有问题了，但是这个无法解决的是行内的公式，也没有找到特别好的办法。 方法简">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-07-27T08:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-27T06:20:13.766Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="番外篇">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="熊妞随手记" type="application/atom+xml">
@@ -70,40 +75,81 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2023" class="archive-year">2023</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2023/07/27/third-git-blog/" class="archive-article-date">
-  <time datetime="2023-07-27T08:00:00.000Z" itemprop="datePublished">Jul 27</time>
+      <section id="main"><article id="post-hexo-equation-blog" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/07/27/hexo-equation-blog/" class="article-date">
+  <time datetime="2023-07-27T08:00:00.000Z" itemprop="datePublished">2023-07-27</time>
 </a>
-      
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Hexo/">Hexo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2023/07/27/third-git-blog/">第二章 改善深层神经网络：超参数调试、正则化及优化</a>
+    <h1 class="article-title" itemprop="name">
+      Hexo如何解决公式渲染问题
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>  找到Hexo可以搭建博客框架，着实高兴了好几天，感觉以后可以把各种深度挖掘研究的笔记转移到这个战场了。但真正开始使用，发现了好多问题，其中最大的一个问题是公式渲染问题。网上找了各种资料，例如将现在hexo-renderer-marked换成hexo-renderer-kramed，这个我也有尝试，对于行间的公式渲染没有问题了，但是这个无法解决的是行内的公式，也没有找到特别好的办法。</p>
+<h2 id="方法简介"><a href="#方法简介" class="headerlink" title="方法简介"></a>方法简介</h2><p>   可能因为文章确实存在很久没有更新的问题，所以得到的结果并不能有效解决当前所有的问题。<br>这个时间正好看到有篇文章提到，还是继续使用marked,只是换个版本的解决方案，这个解决了至少大多数的问题，具体的解决方式如下：</p>
+<ul>
+<li>打开hexo blog 目录：<br>cmd blog</li>
+<li>卸载原先安装的marked<br>npm uninstall hexo-renderer-marked</li>
+<li>重新安装marked 1.0.0版本<br>npm install <a href="mailto:hexo-rnderer-marked@1.0.0">hexo-rnderer-marked@1.0.0</a> </li>
+<li>修改marked.js配置<br>编辑node_modules/marked/lib/marked.js<br>将第539行的<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">escape: /^\\([!&quot;#$%&amp;&#x27;()*+,\-./:;&lt;=&gt;?@\[\]\\^_`&#123;|&#125;~])/&#125; </span><br><span class="line">改为 </span><br><span class="line">escape: /^\\([!&quot;#$%&amp;&#x27;()*+,\-./:;&lt;=&gt;?@\[\]\\^_`&#123;|&#125;~])/&#125;)</span><br><span class="line">将第564行的 </span><br><span class="line">inline._escapes = /\\([!&quot;#$%&amp;&#x27;()*+,\-./:;&lt;=&gt;?@\[\]\\^_`&#123;|&#125;~])/g;</span><br><span class="line">改为:</span><br><span class="line">inline._escapes = /\\([!&quot;#$&amp;&#x27;()*+,\-./:;&lt;=&gt;?@\[\]^_`|~])/g;</span><br></pre></td></tr></table></figure>
 
+</li>
+</ul>
+<p>以上操作应该可以解决大多数公式渲染问题。</p>
+<p>当然我也遇到过几个比较特殊的问题，也给大家分享下：<br>例如某个公式里面要用到<em>，可能由于一些原因，不能正确渲染，这时候建议在前面加上\，变为\</em><br>另外对于\frac公式，可以通过后面加上()等形式来解决。</p>
+<p>针对特殊的符号渲染，目前的解决方案，只能像是调试程序一样，先一点点去定位问题，然后再去找到是什么问题造成的。对于不能渲染的符号，一般都可通过加\来达到目的，但是首先要知道是对于什么符号不能有效识别。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://example.com/2023/07/27/hexo-equation-blog/" data-id="clkkrn2pu000428h7gvxoajpm" class="article-share-link" data-share="baidu" data-title="Hexo如何解决公式渲染问题">Share</a>
+      
+
+      
+        <a href="http://example.com/2023/07/27/hexo-equation-blog/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%95%AA%E5%A4%96%E7%AF%87/" rel="tag">番外篇</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2023/07/27/third-git-blog/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">第二章 改善深层神经网络：超参数调试、正则化及优化</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2023/07/27/hexo-equation-blog/" data-title="Hexo如何解决公式渲染问题" data-url="http://example.com/2023/07/27/hexo-equation-blog/"></div>
+  </section>
 </section>
       
       <aside id="sidebar">
