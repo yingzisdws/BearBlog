@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第四章：卷积神经网络 | 熊妞随手记</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、卷积神经网络  作者提到深度学习有两点让其兴奋，一是计算机视觉的高度发展标志着新型应用产生的可能。通过学习使用这些工具，可能会创造出新的产品和应用。其次，以[[计算机视觉]]举例，可以将其衍生的新的神经网络结构与算法，应用到其他领域的交叉成果。对[[计算机视觉]]来说，除了处理小图外，还需要处理大图，大图的话，就会用到[[卷积]]计算。作者通过[[边缘检测]]介绍了卷积是如何运算的，包括垂直边">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第四章：卷积神经网络">
+<meta property="og:url" content="http://example.com/2023/08/15/fifth-git-blog/index.html">
+<meta property="og:site_name" content="熊妞随手记">
+<meta property="og:description" content="一、卷积神经网络  作者提到深度学习有两点让其兴奋，一是计算机视觉的高度发展标志着新型应用产生的可能。通过学习使用这些工具，可能会创造出新的产品和应用。其次，以[[计算机视觉]]举例，可以将其衍生的新的神经网络结构与算法，应用到其他领域的交叉成果。对[[计算机视觉]]来说，除了处理小图外，还需要处理大图，大图的话，就会用到[[卷积]]计算。作者通过[[边缘检测]]介绍了卷积是如何运算的，包括垂直边">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-08-15T08:05:58.000Z">
+<meta property="article:modified_time" content="2023-08-25T09:26:16.690Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="深度挖掘">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="熊妞随手记" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">熊妞随手记</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="example.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-fifth-git-blog" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/08/15/fifth-git-blog/" class="article-date">
+  <time datetime="2023-08-15T08:05:58.000Z" itemprop="datePublished">2023-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      第四章：卷积神经网络
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、卷积神经网络"><a href="#一、卷积神经网络" class="headerlink" title="一、卷积神经网络"></a>一、卷积神经网络</h1><p>  作者提到深度学习有两点让其兴奋，一是计算机视觉的高度发展标志着新型应用产生的可能。通过学习使用这些工具，可能会创造出新的产品和应用。其次，以[[计算机视觉]]举例，可以将其衍生的新的神经网络结构与算法，应用到其他领域的交叉成果。对[[计算机视觉]]来说，除了处理小图外，还需要处理大图，大图的话，就会用到[[卷积]]计算。作者通过[[边缘检测]]介绍了卷积是如何运算的，包括垂直边缘检测，如何区分正边和正边，以达到亮到暗的区别，即边缘的过渡。<br>  以下开始介绍[[卷积神经网络]]，定义以及应用；  </p>
+<h2 id="1、定义"><a href="#1、定义" class="headerlink" title="1、定义"></a>1、定义</h2><pre><code>卷积网络的组成：[[卷积层]]、[[池化层]]、[[全连接层]]  </code></pre><h3 id="1）卷积"><a href="#1）卷积" class="headerlink" title="1）卷积"></a>1）卷积</h3><pre><code>* 功能  </code></pre><p>获取特征<br>            * 输入<br>$ N_{ H}^{ [l]} × N_{ W}^{ [l]} × N_{ C}^{ [l]} $<br>            * 运算<br>卷积核： $f \times f \times c$<br>Padding: $p$<br>              <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 对 a 的 2nd，4th进行pad</span></span><br><span class="line">np.pad(a, ((<span class="number">0</span>,<span class="number">0</span>), (<span class="number">1</span>,<span class="number">1</span>), (<span class="number">0</span>,<span class="number">0</span>), (<span class="number">3</span>,<span class="number">3</span>), (<span class="number">0</span>,<span class="number">0</span>)), <span class="string">&#x27;constant&#x27;</span>, constant_values=(..,..))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 卷积操作：</span></span><br><span class="line">s = np.multiply(a_slice_prev, W) + b</span><br><span class="line">Z = np.<span class="built_in">sum</span>(s)</span><br></pre></td></tr></table></figure><br>步长： $s$<br>          *   输出<br>            $N^{[l]} = \frac{N^{[l-1]}+ 2 \times p^{[l]} - f^{[l]}}{s^{[l]}} + 1$<br>            1）Valid 卷积<br>            $p = 0$<br>            2）Same 卷积<br>            卷积前后的维度不变。<br>            $p = \frac{f-1}{2}$ ( step = 1)  </p>
+<pre><code>* 训练参数个数  </code></pre><p>$f^{[l]} \times f^{[l]} \times c^{[l-1]} \times c^{[l]} + c^{[l]}$<br>            * 超参数<br>过滤器大小<br>步幅<br>Padding<br>过滤器个数</p>
+<h4 id="互相关（cross-correlation）和卷积-convolution"><a href="#互相关（cross-correlation）和卷积-convolution" class="headerlink" title="互相关（cross-correlation）和卷积(convolution)"></a>互相关（cross-correlation）和卷积(convolution)</h4><pre><code>* 数学意义上或信号处理的卷积操作应还包含“翻转”操作，使得卷积运算具有下述数学性质(结合律)： $(A*B)*C=A*(B*C)$ ；
+* 机器学习中的卷积操作则是省略了“翻转”操作，这一操作在数学上称为“互相关”；</code></pre><h3 id="2）池化"><a href="#2）池化" class="headerlink" title="2）池化"></a>2）池化</h3><pre><code>* 功能  </code></pre><p>缩简模型大小；提高计算速度；提高所获取特征的鲁棒性。<br>            * 运算<br><strong>最大池化（Max Pooling）：</strong> 如果在过滤器中提取到某个特征,那么保留其最大值。 如果没有提取到这个特征, 可能在右上象限中不存在这个特征, 那么其中的最大值也还是很小。<br>              <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.<span class="built_in">max</span>()</span><br></pre></td></tr></table></figure><br><strong>平均池化（Average Pooling）：</strong><br>              <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">np.mean()</span><br></pre></td></tr></table></figure><br>            * 训练参数：无（池化只是计算神经网络某一层的静态属性,没有什么需要学习的,它只是一个静态属性。）<br>            * 超参数： $f、s、p（池化很少用padding）$<br>            * 输出： $\frac{n + 2p -f}{s} + 1$ ; 通道数不变</p>
+<h3 id="3）全连接"><a href="#3）全连接" class="headerlink" title="3）全连接"></a>3）全连接</h3><pre><code>类似于单神经网络层。  </code></pre><h3 id="4）卷积层"><a href="#4）卷积层" class="headerlink" title="4）卷积层"></a>4）卷积层</h3><pre><code>在计算神经网络有多少层时, 通常只统计具有权重和参数的层。 因为池化层没有权重和参数, 只有一些超参数。 这里, 我们把 CONV1 和 POOL1 共同作为一个卷积,并标记为 Layer1。  </code></pre><h2 id="2、训练"><a href="#2、训练" class="headerlink" title="2、训练"></a>2、训练</h2><pre><code>* 尽量不要自己设置超参数,而是查看文献中别人采用了哪些超参数,选一个在别人任务中效果很好的架构,那么它也有可能适用于你自己的应用程序。
+* **常见模式：** 一个或多个卷积后面跟随一个池化层,然后一个或多个卷积层后面再跟一个池化层,然后是几个全连接层,最后是一个softmax。
+* 随着神经网络计算深度不断加深, 通常开始时的图像也要更大一些， 然后随着网络深度的加深而逐渐减小而通道数在增加。</code></pre><h2 id="3、特点"><a href="#3、特点" class="headerlink" title="3、特点"></a>3、特点</h2><pre><code>较标准神经网络使用少得多的参数，主要原因有以下两点：  </code></pre><h3 id="参数共享"><a href="#参数共享" class="headerlink" title="参数共享"></a>参数共享</h3><pre><code>卷积核的平移使不同位置的类似特征使用相同的参数进行检测。  </code></pre><h3 id="稀疏连接"><a href="#稀疏连接" class="headerlink" title="稀疏连接"></a>稀疏连接</h3><pre><code>卷积网络第N层的某个特征值仅与N-1层中对应为止的 $f\times f$ 个元素相关，而不是全部元素。  </code></pre><h1 id="二、经典神经网络"><a href="#二、经典神经网络" class="headerlink" title="二、经典神经网络"></a>二、经典神经网络</h1><h2 id="1、研究目的"><a href="#1、研究目的" class="headerlink" title="1、研究目的"></a>1、研究目的</h2><pre><code>组件：卷积层、池化层以及全连接层。  
+计算机视觉研究集中在如何把这些基本构件组合起来,形成有效的卷积神经网络。  
+通过研究经典网络学习网络构建。  </code></pre><h2 id="2、经典网络"><a href="#2、经典网络" class="headerlink" title="2、经典网络"></a>2、经典网络</h2><pre><code>* LeNet-5
+* AlexNet
+* VGG
+* ResNet
+* Inception</code></pre><h3 id="1）LeNet-5"><a href="#1）LeNet-5" class="headerlink" title="1）LeNet-5"></a>1）LeNet-5</h3><pre><code>针对灰度图片进行训练。  
+
+| 层 | 参数 | 维度 |
+|---|---|---|
+| 输入 | | 32 * 32 * 1 |
+| 卷积 | 5 * 5 * 1 n=6,s=1,p=0 | 28 * 28 * 6 |
+| 平均池化 | 2 * 2 s=2 | 14 * 14 * 6 |
+| 卷积 | 5 * 5 * 1 n=16,s=1,p=0 | 10 * 10 * 16 |
+| 平均池化 | 2 * 2 s=2 | 5 * 5 * 16 |
+| 全连接 | 120 * 400 | 120 * 1 |
+| 全连接 | 84 * 120 | 84 * 1 |
+| softmax | 84 * 10 | 10 * 1 |
+
+特点  
+
+  * 6万多个参数
+  * 随着网络层数的加深，图像电宽度和高度减小，通道数量则增加。</code></pre><h3 id="2）AlexNet"><a href="#2）AlexNet" class="headerlink" title="2）AlexNet"></a>2）AlexNet</h3><pre><code>  | 层 | 参数 | 维度 |
+  |---|---|---|
+  | 输入 | | 227 * 227 * 3 |
+  | 卷积 | 11 * 11 * 3 n=96,s=4,p=0 | 55 * 55 * 96 |
+  | 平均池化 | 3 * 3 s=2 | 27 * 27 * 96 |
+  | 卷积 | 5 * 5 * 96 n=276,s=1,p=2 | 27 * 27 * 276 |
+  | 最大池化 | 3 * 3 s=2 | 13 * 13 * 276 |
+  | same卷积 | 3 * 3 * 276 n=384,s=1,p=1 | 13 * 13 * 384 |
+  | same卷积 | 3 * 3 * 384 n=384,s=1,p=1 | 13 * 13 * 384 |
+  | same卷积 | 3 * 3 * 384 n=256,s=1,p=1 | 13 * 13 * 256 |
+  | 最大池化 | 3 * 3 s=2 | 6 * 6 * 256 |
+  | 全连接 | 4096 * 9216 | 4096 * 1 |
+  | 全连接 | 4096 * 4096 | 4096 * 1 |
+  | softmax | 1000 * 4096 | 1000 * 1 |
+
+  特点：  
+
+    * 6000万个参数；
+    * 能够处理非常相似的基本构造函数；
+    * 使用ReLu函数；
+
+- ### 3）VGG-16
+
+  | 层 | 参数 | 维度 |
+  |---|---|---|
+  | 输入 | | 224 * 224 * 3 |
+  | 2 * 卷积 | 3 * 3 * 3 n=64,s=1,p=same | 224 * 224 * 64 |
+  | 最大池化 | 2 * 2 s=2 | 112 * 112 * 64 |
+  | 2 * 卷积 | 3 * 3 * 3 n=128,s=1,p=same | 112 * 112 * 128 |
+  | 最大池化 | 2 * 2 s=2 | 56 * 56 * 128 |
+  | 3 * 卷积 | 3 * 3 * 3 n=256,s=1,p=same | 56 * 56 * 256 |
+  | 最大池化 | 2 * 2 s=2 | 28 * 28 * 256 |
+  | 3 * 卷积 | 3 * 3 * 3 n=512,s=1,p=same | 28 * 28 * 512 |
+  | 最大池化 | 2 * 2 s=2 | 14 * 14 * 512 |
+  | 3 * 卷积 | 3 * 3 * 3 n= 512,s=1,p=same | 14 * 14 * 512 |
+  | 最大池化 | 2 * 2 s=2 | 7 * 7 * 512 |
+  | 全连接 | 4096 * 25088 | 4096 * 1 |
+  | 全连接 | 4096 * 4096 | 4096 * 1 |
+  | softmax | 1000 * 4096 | 1000 * 1 |
+
+  特点：  
+
+    * 由16个卷积层、全连接层组成；
+    * 网络结构简单，都是卷积后跟着压缩图像大小（缩小图像的宽度、高度）的池化层组成；
+    * 卷积时进行过滤器翻倍；
+    * 总共包含越1.38亿个参数，训练数据量大是其缺点；</code></pre><h3 id="4）残差网络"><a href="#4）残差网络" class="headerlink" title="4）残差网络"></a>4）残差网络</h3><pre><code>处理非常非常深的神经网络训练时所需面对的 **梯度消失** 和 **梯度爆炸** 问题。  
+**残差块：** 通过跳跃连接的方式从某一层获取的激活值，反馈给另一层。  </code></pre><h4 id="残差块"><a href="#残差块" class="headerlink" title="残差块"></a>残差块</h4><p>数学推导：  </p>
+<p>$$<br>              a^{[l]} \<br>              z^{[l+1]} = W^{[l+1]} a^{[l]} + b^{[l+1]} \<br>              a^{[l+1]} = g(z^{[l+1]}) \<br>              z^{[l+2]} = W^{[l+2]} a^{[l+1]} + b^{[l+2]} \<br>              原始连接：a^{[l+2]} = g(z^{[l+2]}) \<br>              跳跃连接：a^{[l+2]} = g(z^{[l+2]} + a^{[l]})<br>$$</p>
+<pre><code>指$a^&#123;[l]&#125;$跳过一层或者好几层，从而将信息传递到神经网络的更深层。  </code></pre><h4 id="“残差”功能"><a href="#“残差”功能" class="headerlink" title="“残差”功能"></a>“残差”功能</h4><pre><code>* 使用标准优化算法训练一个普通网络,比如说梯度下降法,或者其它热门的优化算法。 如果没有残差,没有这些捷径或者跳跃连接,凭经验你会发现随着网络深度的加深, 训练错误会先减少, 然后增多。
+* 使用 ResNets 即使网络再深, 训练的表现却不错, 比如说训练误差减少, 就算是训练深达 100 层的网络也不例外。</code></pre><h4 id="“残差”原理"><a href="#“残差”原理" class="headerlink" title="“残差”原理"></a>“残差”原理</h4><pre><code>* 效率不逊色于更简单的神经网络</code></pre><p>$$<br>跳跃连接：a^{[l+2]} = g(z^{[l+2]} + a^{[l]}) \<br>a^{[l+2]} = g(W^{[l+2]} a^{[l+1]} + b^{[l+2]} + a^{[l]})<br>$$ 如果使用L2正则化或权重衰减，训练过程中 $W^{[l+2]}$ 值会被压缩，对b同样如此。如果 $W^{[l+2]} 和 b$ 的值为0，则有 $a^{[l+2]} = g(a^{[l]}) = a^{[l]}（使用ReLu激活函数）$ 。残差块学习这个恒等式并不难，这意味着在网络中加入这个<strong>跳跃连接对效率影响有限</strong>。<br>                * 所增加的隐藏单元能学到一些有用的信息，这可能比学习恒等函数表现得更好。</p>
+<h3 id="5）谷歌Inception网络"><a href="#5）谷歌Inception网络" class="headerlink" title="5）谷歌Inception网络"></a>5）谷歌Inception网络</h3><h4 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h4><pre><code>Inception 网络或 Inception层的作用就是代替人工来确定卷积层中的过滤器类型, 或者确定是否需要创建卷积层或池化层。  </code></pre><h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><pre><code>给网络添加这些参数的所有可能值,然后把这些输出连接起来,让网络自己学习它需要什么样的参数,采用哪些过滤器组合。  </code></pre><h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><pre><code>**计算成本**  
+使用1x1卷积，形成“瓶颈层”，先缩小网络表示，再扩大，从而达到减小计算成本的目的。  </code></pre><h2 id="3、网络中的网络以及-1X1-卷积"><a href="#3、网络中的网络以及-1X1-卷积" class="headerlink" title="3、网络中的网络以及 1X1 卷积"></a>3、网络中的网络以及 1X1 卷积</h2><pre><code>1 X 1卷积可以理解为一个对一个通道的全连接操作，并在 W x H 所有元素上进行计算。  
+
+**功能**：可以**改变**或**不变**通道数的同时为神经网络添加一个非线形函数。  </code></pre><h2 id="4、方法论"><a href="#4、方法论" class="headerlink" title="4、方法论"></a>4、方法论</h2><h3 id="1）迁移学习"><a href="#1）迁移学习" class="headerlink" title="1）迁移学习"></a>1）迁移学习</h3><pre><code>用迁移学习把公共数据集上的知识迁移到你自己的问题上。  
+“冻结”前面层的参数，把前面的层看作一个固定函数。  </code></pre><h3 id="2）数据增强"><a href="#2）数据增强" class="headerlink" title="2）数据增强"></a>2）数据增强</h3><pre><code>* 垂直镜像对称
+* 随机裁剪
+* 旋转、变形等
+* 彩色转换</code></pre><h2 id="5、计算机视觉现状"><a href="#5、计算机视觉现状" class="headerlink" title="5、计算机视觉现状"></a>5、计算机视觉现状</h2><pre><code>数据 vs 人工处理  
+机器学习算法有两种知识来源：  
+
+  * 一个来源是被标记的数据,就像(x,y)应用在监督学习。
+  * 第二个知识来源是手工工程,有很多方法去建立一个手工工程系统,它可以是源于精心设计的特征,手工精心设计的网络体系结构或者是系统的其他组件。</code></pre><h1 id="三、目标检测"><a href="#三、目标检测" class="headerlink" title="三、目标检测"></a>三、目标检测</h1><p>  三种类型的问题：  </p>
+<pre><code>* 对象分类
+* 定位分类
+* 对象检测  </code></pre><p>前两个问题，通常只有一个较大等对象位于图像等中间位置，而对象检测则是图片中有多个对象。</p>
+<h2 id="1、定位分类"><a href="#1、定位分类" class="headerlink" title="1、定位分类"></a>1、定位分类</h2><pre><code>分类问题通过常规的分类算法实现，定位问题则需重新定义目标标签。  </code></pre><h3 id="对象标签"><a href="#对象标签" class="headerlink" title="对象标签"></a>对象标签</h3><pre><code>8个分量参数表示。  </code></pre><p>$$<br>y = \begin{bmatrix}<br>        P_{c}  \<br>        b_{x} \<br>        b_{y} \<br>        b_{h} \<br>        b_{w} \<br>        c_{1} \<br>        c_{2} \<br>        c_{3}<br>\end{bmatrix}<br>$$<br>$P_{c}$ = 0 时，y的其他参数变得无意义。</p>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><pre><code>1）平方误差策略（简化策略）：  </code></pre><ul>
+<li>当 $y_{1}=1$ 时<br>$$<br>L(\hat{y}, y) = (\hat{y}_{1}-y_{1})^{2} + (\hat{y}_{2}-y_{2})^{2} + …(\hat{y}_{8}-y_{8})^{2}\tag{1}<br>$$</li>
+<li>当 $y_{1}=0$ 时<br>$$<br>L(\hat{y}, y) = (\hat{y}_{1}-y_{1})^{2}<br>$$</li>
+</ul>
+<p>2）常规策略<br>$$<br>$$<br>            * 不对 $c_{1},c_{2},c_{3}$ 应用对数损失函数；<br>            * 对边界框坐标应用平方差或类似方法；<br>            * 对 $P_{c}$ 应用逻辑回归函数；</p>
+<h3 id="特征点检测"><a href="#特征点检测" class="headerlink" title="特征点检测"></a>特征点检测</h3><pre><code>神经网络通过输出图片上对特征点的 $(x, y)$ 坐标来实现对目标特征的识别。  
+
+标签定义(64个特征点)  </code></pre><p>$$<br>      y = \begin{bmatrix}<br>        P_{c}  \<br>        1_{1x}, 1_{1y} \<br>        1_{2x}, 1_{2y}  \<br>        … \<br>        1_{64x}, 1_{64y}  \<br>        \end{bmatrix} \<br>$$<br>        $P_{c}$ = 0 时，y的其他参数变得无意义。</p>
+<pre><code>相同序号的特征点在所有图片中保持一致。  </code></pre><h2 id="2、对象检测"><a href="#2、对象检测" class="headerlink" title="2、对象检测"></a>2、对象检测</h2><h3 id="滑动窗口目标检测"><a href="#滑动窗口目标检测" class="headerlink" title="滑动窗口目标检测"></a>滑动窗口目标检测</h3><pre><code>**训练步骤：**  
+1）裁剪图片（使对象占据整个图片），创建一个标签训练集；  
+2）训练卷积网络，输出分类结果；  
+3）使用不同大小的窗口进行滑动窗口目标检测，得到各个窗口的分类结果；  
+
+**缺点：** 计算成本较高  </code></pre><h3 id="滑动窗口的卷机实现"><a href="#滑动窗口的卷机实现" class="headerlink" title="滑动窗口的卷机实现"></a>滑动窗口的卷机实现</h3><pre><code>**原理：**  
+该卷积操作的原理是我们不需要把输入图像分割成四个子集（例：16x16图片传入14x14输入的卷积网络）,分别执行前向传播,而是把它们作为一张图片输入给卷积网络进行计算,其中的公共区域可以共享很多计算,就像这里我们看到的这个 4 个 14×14 的方块一样。  
+
+这是一个逻辑上“嵌套”的卷积，卷积网络输入层作为卷积核。全连接层的卷积变换。  
+
+**缺点：** 边界框的位置不够准确。  </code></pre><h2 id="3、边界框预测"><a href="#3、边界框预测" class="headerlink" title="3、边界框预测"></a>3、边界框预测</h2><pre><code>其中一个能更精准边界框的算法是Yolo（You Only Look Once）  
+**步骤：**  
+1）在图像上定义一个网格，如：3 x 3；  
+2）定义网格的标签：  </code></pre><p>$$<br>      y = \begin{bmatrix}<br>        P_{c}  \<br>        b_{x} \<br>        b_{y} \<br>        b_{h} \<br>        b_{w} \<br>        c_{1} \<br>        c_{2} \<br>        c_{3}<br>        \end{bmatrix} \<br>      $$<br>      3）对象分配  </p>
+<pre><code>  * 将对象分配给包含对象中点的格子，**即使对象可以横跨多个格子**；
+
+*   即使格子有两辆车的一部分，仍认为中心格子没有任何我们感兴趣对对象；  
+  4）边框约定：  </code></pre><p>$$<br>$$<br>        $b_{x},b_{y},b_{h},b_{w}$ 单位是相对于格子尺寸的比例，所以 $b_{x},b_{y}$ 必须在0和1之间, $b_{h},b_{w}$ 可能会大于1.<br>        - ### 交并比（Intersection over union）</p>
+<pre><code>用来评价对象检测算法。  </code></pre><p>$$<br>          IOU =  \frac{(A \cap B)}{(A \cup B)}  \\<br>          A : 实际边界框 \<br>          B : 算法预测边界框<br>          $$<br>          一般约定：如果$ IoU ≥ 0.5 $，就说检测正确，如果预测和实际边界框完美重叠，IoU就是1.  </p>
+<h3 id="非极大值抑制（Non-max-suppression）"><a href="#非极大值抑制（Non-max-suppression）" class="headerlink" title="非极大值抑制（Non-max suppression）"></a>非极大值抑制（Non-max suppression）</h3><pre><code>这是一个基于交并比的工具，可以让YOLO算法输出效果更好。  
+1）问题提出：  
+前面的算法可能对同一个对象做出多次检测，即：多个格子都认为包含对象的中心点，这造成对象不是被检测出一次而是检测出多次。  
+**非极大值抑制** 可以确保每个对象只被检测出一次。  
+2）步骤：  </code></pre><p>$$<br>$$<br>            * 找 $ P_{ c}$最大的边界框 - 最可靠的检测；<br>            * 计算剩余边界框与上述概率最大边界框（不是实际边界框）的交并比，高度重叠点边界框输出被抑制（表示预测的为同一个对象）；<br>            * 处理下一个概率最高的边界框；  </p>
+<p>总结：输出概率最大的分类结果，但抑制很接近但不是概率最大的其他预测结果。</p>
+<h3 id="Anchor-Boxes"><a href="#Anchor-Boxes" class="headerlink" title="Anchor Boxes"></a>Anchor Boxes</h3><pre><code>解决的问题：当一个格子中同时落入多个对象的中心点，让一个格子检测出多个对象。  
+Anchor box思路：预先定义多个不同形状的 anchor box，把预测结果和 anchor box 关联起来。  
+
+  * **标签定义**  </code></pre><p>重复两次（或多次）的向量元素：<br>$ y = [P_{ c} b_{ x} b_{ y} b_{ h} b_{ w} c_{ 1} c_{ 2} c_{ 3} P_{ c} b_{ x} b_{ y} b_{ h} b_{ w} c_{ 1} c_{ 2} c_{ 3}]^{ T} $<br>即：输出维度更高，与anchor box 数量相关。  </p>
+<p>问题：<br>            * 引入 anchor box 是为处理两个对象出现在同一个格子里的情况；<br>            * 对一个格子中有三个对象的情况处理不好；<br>            * 两个对象 anchor box 形状也一样时，处理也不好；  </p>
+<p>手工指定 anchor box 形状；</p>
+<h2 id="4、Yolo-算法"><a href="#4、Yolo-算法" class="headerlink" title="4、Yolo 算法"></a>4、Yolo 算法</h2><pre><code>组合前面课程的组件。  
+  - ### 训练集构造
+
+      * 标签定义  </code></pre><p>$ 网格 × 网格 × anchor box × 目标向量（ P_{ c},b_{ x},b_{ y},b_{ h},b_{ w}, c_{ 1}, c_{ 2}, c_{ 3} )$</p>
+<h3 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h3><h3 id="预测"><a href="#预测" class="headerlink" title="预测"></a>预测</h3><h3 id="非极大值抑制"><a href="#非极大值抑制" class="headerlink" title="非极大值抑制"></a>非极大值抑制</h3><h2 id="样例：车辆检测代码"><a href="#样例：车辆检测代码" class="headerlink" title="样例：车辆检测代码"></a>样例：车辆检测代码</h2><p>  输入：（m，608，608，3）<br>  Yolo输出：19 * 19, 5, 85（由cnn模型输出）<br>  处理流程：<br>  1、通过分类分数过滤<br>  将 19 * 19 * 5 * 85 分解成以下tensor<br>    * box_confidence: 19 * 19 , 5, 1<br>    * boxes: 19 * 19, 5, 4<br>    * box_class_prob: 19 * 19, 5, 80<br>  1）对19*19个cell中的每个cell操作其5个anchor box，取每个box所识别出的目标分类及分数：<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">box_classes = K.argmax(box_scores, axis=-<span class="number">1</span>)</span><br><span class="line">box_classes_scores = K.<span class="built_in">max</span>(box_scores, axis=-<span class="number">1</span>)</span><br></pre></td></tr></table></figure><br>  2）依据box分类分数过滤，得到分类掩码：<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filtering_mask = box_class_scores &gt;= threshold</span><br></pre></td></tr></table></figure><br>  3）过滤<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scores = tf.boolean_mask(box_class_scores, filtering_mask)</span><br><span class="line">boxes = tf.boolean_mask(boxes, filtering_mask)</span><br><span class="line">classes = tf.boolean_mask(box_classes, filtering_mask)</span><br></pre></td></tr></table></figure><br>  <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/boolean_mask">https://www.tensorflow.org/api_docs/python/tf/boolean_mask</a><br>  处理结果为：对每个cell保留分类值大于域值的box。  </p>
+<p>  2、非极大值抑制<br>  1）计算IOU<br>  2）非极大值抑制处理：<br>    * 选择分数最高的box<br>    * 计算所选box与所有其他box的iou，移除超过iou_threshold的box；<br>    * 循环处理剩余box中分数最高对box，进行上述处理；<br>      <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tf.image.non_max_suppression()  <span class="comment"># 返回抑制操作后的索引清单</span></span><br><span class="line">K.gather()                      <span class="comment"># 返回索引清单中对应的对象</span></span><br></pre></td></tr></table></figure></p>
+<p>  3、box坐标转换<br>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">boxes = yolo_boxes_to_corners(box_xy, box_wh) <span class="comment"># 转换为对角坐标</span></span><br><span class="line">boxes = scale_boxes(boxes, image_shape) <span class="comment"># 缩放</span></span><br></pre></td></tr></table></figure></p>
+<p>  4、yolo.h5 预训练权重下载<br>  load_model() 报错处理<br>  <a target="_blank" rel="noopener" href="https://blog.cndn.net/Solo95/article/details/85262828">https://blog.cndn.net/Solo95/article/details/85262828</a>  </p>
+<p>  ** 总结：**<br>  1）样本通过yolo_model生成yolo_model.output;<br>  2）yolo_model.output 通过 yolo_head 转换格式为：yolo_outputs;<br>  3）yolo_outputs通过 yolo_eval 预测生成scores,boxes,classes;  </p>
+<h1 id="四、人脸识别"><a href="#四、人脸识别" class="headerlink" title="四、人脸识别"></a>四、人脸识别</h1><h2 id="1、概念"><a href="#1、概念" class="headerlink" title="1、概念"></a>1、概念</h2><pre><code>* 人脸验证(face verification):输入为图片以及ID等信息以验证是否这个人，1对1的问题。
+* 人脸识别(face recognition):1对多的问题，相当于多次的人脸验证。维护一个K个样本的数据库，输入为一个图片。</code></pre><h2 id="2、one-shot-learning"><a href="#2、one-shot-learning" class="headerlink" title="2、one-shot learning"></a>2、one-shot learning</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><pre><code>人脸验证的问题，通常只有单个或极少的样本进行训练以识别出一个人。  </code></pre><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><h4 id="1）常规方案：softmax分类"><a href="#1）常规方案：softmax分类" class="headerlink" title="1）常规方案：softmax分类"></a>1）常规方案：softmax分类</h4><pre><code>将人的照片放进卷积神经网络，不同的人对应不同的标签。  
+存在缺点：  
+  * 训练集不足以训练稳健的神经网络
+  * 新人加入需要增加新的标签分类</code></pre><h4 id="2）Similarity函数"><a href="#2）Similarity函数" class="headerlink" title="2）Similarity函数"></a>2）Similarity函数</h4><p>$$<br>$$</p>
+<pre><code>训练一个函数：d(image1, image2)=degree of different images。  
+以两张图片作为输入,然后输出这两张图片的差异值。 如果你放进同一个人的两张照片, 你希望它能输出一个很小的值, 如果放进两个长相差别很大的人的照片, 它就输出一个很大的值。阈值 $\to$ 是一个超参数。  </code></pre><h2 id="3、Siamese（孪生）-网络"><a href="#3、Siamese（孪生）-网络" class="headerlink" title="3、Siamese（孪生） 网络"></a>3、Siamese（孪生） 网络</h2><pre><code>定义：  
+  对于两个不同的输入，运行相同的卷积神经网络，然后比较它们，这种架构称为siamese网络架构。  
+流程：  </code></pre><p>$$<br>$$<br>      1）输入两张图片 $（x^{(1)},x^{(2)}）$ ；<br>      2）对输入图片分别编码(通过卷积神经网络，得到softmax分类前的向量)，得到 $(f(x^{(1)}), f(x^{(2)}))$ ;<br>      3）定义两幅图片编码之差的范数：<br>      4）反向传播改变这个网络所有层的参数，得到不同的编码结果，以满足相似度条件（即：得到好的编码）；  </p>
+<h3 id="参数训练方案：Triplet损失"><a href="#参数训练方案：Triplet损失" class="headerlink" title="参数训练方案：Triplet损失"></a>参数训练方案：Triplet损失</h3><pre><code>  通过学习神经网络的参数来得到优质的**人脸图片编码**, 方法之一就是定义三元组损失函数然后应用梯度下降。  
+
+**定义：**  
+  1）三元组输入  
+    * Anchor图片样本（A）
+    * Positive图片样本（P）
+    * Negative图片样本（N）  
+  2）损失函数公式  </code></pre><p>$$<br>          d(A, P) = \mid\mid f(A)-f(P) \mid\mid^{2} \<br>          d(A, N) = \mid\mid f(A)-f(N) \mid\mid^{2} \<br>          d(A, P) + \alpha \le d(A, N) \<br>          $$           $\alpha$ : 称为间隔的超参数，用以防止出现函数f返回0，同时又满足上述条件的无用结果。<br>          $\alpha$ 至少为0.2，它拉大Anchor和Positive图片对与Anchor和Negative图片对之间的差距。<br>          <strong>损失函数：</strong><br>$$<br>          L(A,P,N) = max(\mid\mid f(A)-f(P) \mid\mid^{2} - \mid\mid f(A)-f(N) \mid\mid^{2} + \alpha, 0)<br>          $$<br>          3）三元组训练集<br>            * 需要成对的A和P，这要求确保有同一个人的多个图片。<br>            * 尽可能选择 <strong>难训练</strong> 的三元组A、P和N，即：正负样本与Anchor样本方差值相差不大。  </p>
+<p><strong>参考资料：</strong> Florian Schroff, Dmitry Kalenichenko, James Philbin (2015). FaceNet: A Unified Embedding for Face Recognition and Clustering</p>
+<h3 id="参数训练方案：人脸验证与二分类"><a href="#参数训练方案：人脸验证与二分类" class="headerlink" title="参数训练方案：人脸验证与二分类"></a>参数训练方案：人脸验证与二分类</h3><pre><code>使用 Siamese 网络，计算出一对图像对编码，然后将其输入到逻辑回归单元以进行预测，如果是相同的人输出是1，不同的人输出为0。这种训练方法可以作为 **Triplet loss** 方法对替代。  
+
+1）**预测值计算公式：**  </code></pre><p>$$<br>          \hat{y} = \sigma{(\sum_{k=1}^{128}w_{k}\mid f(x^{(i)})_{k} -f(x^{(j)})_{k} \mid + b)}<br>$$           和普通的逻辑回归一样，在128个单元上训练合适对权重，用来预测两张图片是否是一个人。  </p>
+<pre><code>**公式变种：** $\chi平方相似公式$  </code></pre><p>$$<br>          \frac{(f(x^{(i)})_{k}-f(x^{(j)})_{k})^{2}}{f(x^{(i)})_k + f(x^{(j})_{k}}<br>$$<br>          <strong>参考资料：</strong> Yaniv Taigman, Ming Yang, Marc’Aurelio Ranzato, Lior Wolf (2014). DeepFace: Closing the gap to human-level performance in face verification  </p>
+<pre><code>2）训练集  
+创建一个只有成对图片的训练集，不是三个一组而是成对的图片，目标标签是1，表示一对图片是一个人，目标标签为0则为不同人。  </code></pre><h1 id="五、神经风格迁移"><a href="#五、神经风格迁移" class="headerlink" title="五、神经风格迁移"></a>五、神经风格迁移</h1><p>  定义：使用 <strong>风格图片（S）</strong> 的风格，重新根据 <strong>内容图片（C）</strong> 的内容生成 <strong>新的图片（G）</strong>。  </p>
+<h2 id="1、卷积网络提取的特征"><a href="#1、卷积网络提取的特征" class="headerlink" title="1、卷积网络提取的特征"></a>1、卷积网络提取的特征</h2><pre><code>接受域  </code></pre><h2 id="2、神经风格迁移代价函数定义"><a href="#2、神经风格迁移代价函数定义" class="headerlink" title="2、神经风格迁移代价函数定义"></a>2、神经风格迁移代价函数定义</h2><pre><code>代价函数的目的：此前训练神经网络的代价函数定义的是关于参数的函数，此处的代价函数则是关于生成图片G的函数。通过梯度下降去最小化J(G)，以生成符合要求的图像。  
+
+代价函数由两部分组成：  </code></pre><p>$$<br>      J(G) = \alpha J_{content}(C, G) + \beta J_{style}(S, G)<br>$$        </p>
+<ul>
+<li>内容代价： $\alpha J_{content}(C, G)$<pre><code>* 风格代价： $\beta J_&#123;style&#125;(S, G)$  </code></pre></li>
+</ul>
+<p>迭代更新：$ G = G - frac{∂}{∂ G}J(G)$</p>
+<h3 id="内容代价函数"><a href="#内容代价函数" class="headerlink" title="内容代价函数"></a>内容代价函数</h3><pre><code>**“内容”定义**  
+用隐含层l的激活项来计算内容代价，如果l很小（如：1），生成图片像素上就会非常接近内容图片。  
+
+**内容代价函数定义：**  </code></pre><p>$$<br>          J_{content}(C, G)=\frac{1}{2}\mid\mid a^{[l](C)} - a^{[l](G)} \mid\mid ^{2}<br>$$    </p>
+<h3 id="风格代价函数"><a href="#风格代价函数" class="headerlink" title="风格代价函数"></a>风格代价函数</h3><pre><code>**&quot;风格&quot;定义**  
+图片同一坐标位置（ $N_&#123;H&#125;, N_&#123;W&#125;$ ）值，在不同通道（ $N_&#123;C&#125;$ ）之间的相互关系。  
+使用 **风格矩阵** 进行表示：  </code></pre><p>$$<br>          G_{kk’}^{[l](S)} = \sum_{i=1}^{n_{H}^{[l]}}\sum_{j=1}^{n_{W}^{[l]}} a_{i,j,k}^{[l](S)}a_{i,j,k’}^{[l](S)} \<br>          G_{kk’}^{[l](G)} = \sum_{i=1}^{n_{H}^{[l]}}\sum_{j=1}^{n_{W}^{[l]}} a_{i,j,k}^{[l](G)}a_{i,j,k’}^{[l](G)}<br>$$            </p>
+<ul>
+<li>如果两个通道中的激活项数值很大，那么 $G_{kk’}^{[l]}$ 会很大，如不相关则计算值很小。  </li>
+</ul>
+<p><strong>风格代价函数定义</strong><br>$$<br>J_{style}^{[L]}(S, G)=\frac{1}{(2n_{H}^{[l]}n_{W}^{[l]}n_{C}^{[l]})^{2}}\sum_{k}\sum_{k’} (G_{kk’}^{[l](S)} - G_{kk’}^{[l](G)}) \<br>\<br>J_{style}(S, G) = \sum_{l} \lambda^{[l]} J^{[l]}_{style}(S,G)<br>$$<br>            * 这是 <strong>一个隐层</strong> 两个矩阵间一个基本的 Frobenius 范数,也就是?图像和?图像之间的范数再乘上一个归一化常数。<br>            * 为取得更好的结果，可以对各个隐层都计算风格代价函数，对每个层定义权重-超参数： $\lambda^{[l]}$ 。</p>
+<h1 id="六、一维到三维推广应用"><a href="#六、一维到三维推广应用" class="headerlink" title="六、一维到三维推广应用"></a>六、一维到三维推广应用</h1><h2 id="一维应用"><a href="#一维应用" class="headerlink" title="一维应用"></a>一维应用</h2><pre><code>* 一维信号数据：脑电图</code></pre><h2 id="三维应用"><a href="#三维应用" class="headerlink" title="三维应用"></a>三维应用</h2><pre><code>* CT扫描
+* 视频数据</code></pre><h1 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h1><pre><code>* 基于 Leon Gatys,  Alexandra Ecker 和 Matthias Bethge 的这篇论文。 Leon A. Gatys, Alexander S. Ecker, Matthias Bethge, (2015).  </code></pre><p>A Neural Algorithm of Artistic Style (<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1508.06576">https://arxiv.org/abs/1508.06576</a>)<br>    * Florian Schroff, Dmitry Kalenichenko, James Philbin (2015). FaceNet: A Unified Embedding for Face Recognition and Clustering<br>    * Yaniv Taigman, Ming Yang, Marc’Aurelio Ranzato, Lior Wolf (2014). DeepFace: Closing the gap to human-level performance in face verification<br>    * The pretrained model we use is inspired by Victor Sy Wang’s implementation and was loaded using his code: <a target="_blank" rel="noopener" href="https://github.com/iwantooxxoox/Keras-OpenFace">https://github.com/iwantooxxoox/Keras-OpenFace</a>.<br>    * Our implementation also took a lot of inspiration from the official FaceNet github repository: <a target="_blank" rel="noopener" href="https://github.com/davidsandberg/facenet">https://github.com/davidsandberg/facenet</a><br>    * Leon A. Gatys, Alexander S. Ecker, Matthias Bethge, (2015). A Neural Algorithm of Artistic Style (<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1508.06576">https://arxiv.org/abs/1508.06576</a>)<br>    * Harish Narayanan, Convolutional neural networks for artistic style transfer.<br><a target="_blank" rel="noopener" href="https://harishnarayanan.org/writing/artistic-style-transfer/">https://harishnarayanan.org/writing/artistic-style-transfer/</a><br>    * Log0, TensorFlow Implementation of “A Neural Algorithm of Artistic Style”.<br><a target="_blank" rel="noopener" href="http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style">http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style</a><br>    * Karen Simonyan and Andrew Zisserman (2015). Very deep convolutional networks for largescale image recognition (<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1409.1556.pdf">https://arxiv.org/pdf/1409.1556.pdf</a>)<br>    * MatConvNet. <a target="_blank" rel="noopener" href="http://www.vlfeat.org/matconvnet/pretrained/">http://www.vlfeat.org/matconvnet/pretrained/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://example.com/2023/08/15/fifth-git-blog/" data-id="cllqdwhcy000010h7fy1oa07g" class="article-share-link" data-share="baidu" data-title="第四章：卷积神经网络">Share</a>
+      
+
+      
+        <a href="http://example.com/2023/08/15/fifth-git-blog/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98/" rel="tag">深度挖掘</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2023/08/05/four-git-blog/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">第三章：结构化机器学习项目</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2023/08/15/fifth-git-blog/" data-title="第四章：卷积神经网络" data-url="http://example.com/2023/08/15/fifth-git-blog/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8F%82%E6%95%B0%E8%B0%83%E8%8A%82/">参数调节</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98/" rel="tag">深度挖掘</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%AA%E5%A4%96%E7%AF%87/" rel="tag">番外篇</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98/" style="font-size: 20px;">深度挖掘</a> <a href="/tags/%E7%95%AA%E5%A4%96%E7%AF%87/" style="font-size: 10px;">番外篇</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a><span class="archive-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/08/15/fifth-git-blog/">第四章：卷积神经网络</a>
+          </li>
+        
+          <li>
+            <a href="/2023/08/05/four-git-blog/">第三章：结构化机器学习项目</a>
+          </li>
+        
+          <li>
+            <a href="/2023/07/27/hexo-equation-blog/">Hexo如何解决公式渲染问题</a>
+          </li>
+        
+          <li>
+            <a href="/2023/07/27/third-git-blog/">第二章 改善深层神经网络：超参数调试、正则化及优化</a>
+          </li>
+        
+          <li>
+            <a href="/2023/07/19/second-git-blog/">第一章 神经网络和机器学习</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://arvinxiang.com" target="_blank">主题作者</a>
+          </li>
+        
+          <li>
+            <a href="http://reqianduan.com" target="_blank">热前端</a>
+          </li>
+        
+          <li>
+            <a href="http://yuancheng.work" target="_blank">远程.work</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 John Doe<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="totop"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>
