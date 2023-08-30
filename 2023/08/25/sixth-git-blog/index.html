@@ -1,0 +1,561 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第五章：序列模型 | 熊妞随手记</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="序列模型是深度学习最令人激动的内容。循环神经网络RNN的模型在语音识别、自然语言处理和其他领域引起很大变革。在这门课中，将会学习到如何创建这些模型以及应用。   序列问题有多种结构：  $$  $$    * 输入数据 x 和输出数据 y 都是序列，x 和 y 一样长或者不一样长；    * 只有 x 或者只有 y 是序列；    * 一对一：去掉$a^{\langle 0 \rangle}$,就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第五章：序列模型">
+<meta property="og:url" content="http://example.com/2023/08/25/sixth-git-blog/index.html">
+<meta property="og:site_name" content="熊妞随手记">
+<meta property="og:description" content="序列模型是深度学习最令人激动的内容。循环神经网络RNN的模型在语音识别、自然语言处理和其他领域引起很大变革。在这门课中，将会学习到如何创建这些模型以及应用。   序列问题有多种结构：  $$  $$    * 输入数据 x 和输出数据 y 都是序列，x 和 y 一样长或者不一样长；    * 只有 x 或者只有 y 是序列；    * 一对一：去掉$a^{\langle 0 \rangle}$,就">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/pic1_forward.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/RNN_cell_forward.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/RNN_reverse.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/lstm_cell.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/cosin.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/mean.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/lstm_cell.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/recognize.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/equal.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/4-1.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/4-2.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/5-2.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/5-3.png">
+<meta property="og:image" content="http://example.com/2023/08/25/sixth-git-blog/5-4.png">
+<meta property="article:published_time" content="2023-08-25T08:05:58.000Z">
+<meta property="article:modified_time" content="2023-08-30T06:15:54.442Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="深度挖掘">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/08/25/sixth-git-blog/pic1_forward.png">
+  
+    <link rel="alternative" href="/atom.xml" title="熊妞随手记" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">熊妞随手记</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="example.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-sixth-git-blog" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2023/08/25/sixth-git-blog/" class="article-date">
+  <time datetime="2023-08-25T08:05:58.000Z" itemprop="datePublished">2023-08-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      第五章：序列模型
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>序列模型是深度学习最令人激动的内容。循环神经网络RNN的模型在语音识别、自然语言处理和其他领域引起很大变革。在这门课中，将会学习到如何创建这些模型以及应用。</p>
+<p>  <strong>序列问题有多种结构：</strong><br>  $$<br>  $$<br>    * 输入数据 x 和输出数据 y 都是序列，x 和 y 一样长或者不一样长；<br>    * 只有 x 或者只有 y 是序列；<br>    * 一对一：去掉$a^{\langle 0 \rangle}$,就是标准神经网络；<br>    * 一对多：音乐生成；<br>    * 多对一：情感分析；<br>    * 多对多：命名实体识别；  </p>
+<p><strong>符号定义：</strong><br>    * $x^{\langle t \rangle}$<br>    * $T_{x}$<br>    * $y^{\langle t \rangle}$<br>    * $T_{y}$  </p>
+<p><strong>单词表示：</strong> one-hot表示法<br>    * 构建词典：遍历训练集，找到前一定数量的常用词；<br>    * 遇到一个不在词表中的单词，创建一个新的标记 - Unknow Word 的伪单词<UNK>；  </UNK></p>
+<p><strong>使用标准神经网络的缺点：</strong><br>    * 输入和输出可以有不同的长度；<br>    * 单纯的神经网络结构，不共享从序列不同位置上学到的特征；  </p>
+<p><strong>循环神经网路特点：</strong><br>    * 从左向右扫描数据(单向RNN)，同时<strong>每个时间步的参数也是共享的</strong>，即：每个时间步使用相同的： $W_{ax}、W_{aa}、W_{ay}$ ;<br>    * 双向循环网络（BRNN），则使用序列前后的数据进行预测；</p>
+<h2 id="1、RNN"><a href="#1、RNN" class="headerlink" title="1、RNN"></a>1、RNN</h2><h3 id="1）前向传播"><a href="#1）前向传播" class="headerlink" title="1）前向传播"></a>1）前向传播</h3><p>前向传播<br>          <img src="/2023/08/25/sixth-git-blog/pic1_forward.png" alt="前向传播"></p>
+<p>RNN Cell 正向传播<br>          <img src="/2023/08/25/sixth-git-blog/RNN_cell_forward.png" alt="RNN Cell"><br>          $a^{\langle t \rangle} = \tanh(W_{a}[a^{\langle t-1 \rangle}, x^{\langle t \rangle}] + b_{a})$<br>          $\hat{y}^{\langle t \rangle} = softmax( W_{y}[a^{\langle t \rangle}] + b_{y})$  </p>
+<h3 id="2）反向传播"><a href="#2）反向传播" class="headerlink" title="2）反向传播"></a>2）反向传播</h3><pre><code>* cell 损失函数  </code></pre><p>针对one-hot向量的计算，因此使用二分类损失函数。<br>$$<br>L^{\langle t \rangle}(\hat{y}^{\langle t \rangle}, y^{\langle t \rangle}) = -y^{\langle t \rangle}log\hat{y}^{\langle t \rangle} - (1-\hat{y}^{\langle t \rangle})log(1-y^{\langle t \rangle})<br>$$<br>            * 整个序列的损失函数<br>$$<br>L(\hat{y},y) = \sum_{t=1}^{T_{x}}L^{\langle t \rangle}({\hat{y}^{\langle t \rangle}, y^{\langle t \rangle}})<br>$$<br>            * RNN Cell 反向传播<br><img src="/2023/08/25/sixth-git-blog/RNN_reverse.png" alt="RNN Cell"></p>
+<p>上图中公式： </p>
+<p>$$<br>\frac{\partial{tanh(x)}}{\partial{x}}<br>$$<br>应理解为：<br>$$<br>\frac{\partial{a^{&lt;t&gt;}}}{\partial{z^{&lt;t&gt;}}} = 1 - tanh(z^{&lt;t&gt;})^{2} = 1 - a^{&lt;t&gt;2}<br>$$</p>
+<p>  反向传播时的梯度值更新：  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradients = rnn_cell_jbackward(da[:,:,t]+da_prevt, caches[t])</span><br></pre></td></tr></table></figure>
+<h2 id="2、语言模型"><a href="#2、语言模型" class="headerlink" title="2、语言模型"></a>2、语言模型</h2><p>  <strong>定义：</strong> 语言模型用于识别特定的句子出现的概率。  </p>
+<p>  语言模型是两种系统的基本组成部份：语音识别系统、机器翻译系统。  </p>
+<h3 id="建立语言模型"><a href="#建立语言模型" class="headerlink" title="建立语言模型"></a>建立语言模型</h3><p>  1）训练集  </p>
+<pre><code>* 训练集包含一个很大的**语料库**（很长或者数量众多的句子组成的文本）。
+* 将句子标记化：建立一个字典；转换为one-hot向量；
+* 定义句子结尾EOS；
+* 未知词标志（UNK）；  </code></pre><p>  2）构建一个RNN的概率模型  </p>
+<h2 id="3、LSTM"><a href="#3、LSTM" class="headerlink" title="3、LSTM"></a>3、LSTM</h2><p>LSTM Cell<br>      <img src="/2023/08/25/sixth-git-blog/lstm_cell.png" alt="LSTM Cell">  </p>
+<p>###处理流程<br>  1）拼接矩阵 $a^{\langle t-1 \rangle}$ 和 $x^{\langle t-1 \rangle}$ 成新的矩阵 $concat = \begin{bmatrix} a^{\langle t-1 \rangle} \\ x^{\langle t \rangle} \end{bmatrix}$ ;<br>  2）使用<code>sigmoid</code>函数计算 $\Gamma$ ;<br>  3）使用<code>tanh</code>函数计算 $\tilde{c}^{\langle t \rangle}$ 和 $a^{\langle t \rangle}$ ；<br>  4）使用<code>softmax</code>函数计算 $y^{\langle t \rangle}$ ；  </p>
+<p>  $\Gamma^{\langle t \rangle}$ 为一个值为0 和 1 的向量，不同门向量分别乘以 $<br>  \tilde{c}^{\langle t \rangle} 和 c^{\langle t-1 \rangle}$ 得到 $c^{\langle t \rangle} 和 a^{\langle t \rangle}$ 。<br>  <strong>注意：</strong> 此处是向量元素相乘而不是点乘。<br>    - LSTM反向传播<br>$$<br>$$<br>      1） $\Gamma$ 导数  </p>
+<p>$$<br>      d\Gamma_o^{\langle t \rangle} = da_{next} * \tanh(c_{next}) * \Gamma_o^{\langle t \rangle} * (1-\Gamma_o^{\langle t \rangle})<br>$$</p>
+<p>$$<br>      d\tilde{c}^{\langle t \rangle} = dc_{next}*\Gamma_i^{\langle t \rangle}+ \Gamma_o^{\langle t \rangle} (1-\tanh(c_{next})^2) * i_t * da_{next} * \tilde{c}^{\langle t \rangle} * (1-\tanh(\tilde{c})^{2})<br>$$</p>
+<p>$$<br>      d\Gamma_u^{\langle t \rangle} = dc_{next} * \tilde c^{\langle t \rangle} + \Gamma_o^{\langle t \rangle} (1-\tanh(c_{next})^2) * \tilde c^{\langle t \rangle} * da_{next}*\Gamma_u^{\langle t \rangle} * (1-\Gamma_u^{\langle t \rangle}) \<br>$$</p>
+<p>$$<br>      d\Gamma_f^{\langle t \rangle} = dc_{next}*\tilde c_{prev} + \Gamma_o^{\langle t \rangle} (1-\tanh(c_{next})^2) * c_{prev} * da_{next} * \Gamma_f^{\langle t \rangle} * (1-\Gamma_f^{\langle t \rangle})<br>$$<br>      2）参数导数  </p>
+<p>$$<br>      dW_f = d\Gamma_f^{\langle t \rangle} * \begin{pmatrix} a_{prev} \\ x_t\end{pmatrix}^T  \<br>      dW_u = d\Gamma_u^{\langle t \rangle} * \begin{pmatrix} a_{prev} \\ x_t\end{pmatrix}^T  \<br>      dW_c = d\tilde c^{\langle t \rangle} * \begin{pmatrix} a_{prev} \\ x_t\end{pmatrix}^T  \<br>      dW_o = d\Gamma_o^{\langle t \rangle} * \begin{pmatrix} a_{prev} \\ x_t\end{pmatrix}^T  \<br>$$<br>      3）变量导数<br>$$<br>      da_{prev} = W_f^T * d\Gamma_f^{\langle t \rangle} + W_u^T * d\Gamma_u^{\langle t \rangle}+ W_c^T * d\tilde c^{\langle t \rangle} + W_o^T * d\Gamma_o^{\langle t \rangle} \<br>      dx^{\langle t \rangle} = W_f^T * d\Gamma_f^{\langle t \rangle} + W_u^T * d\Gamma_u^{\langle t \rangle}+ W_c^T * d\tilde c_t + W_o^T * d\Gamma_o^{\langle t \rangle} \<br>$$</p>
+<h1 id="二、词汇表征"><a href="#二、词汇表征" class="headerlink" title="二、词汇表征"></a>二、词汇表征</h1><h2 id="（一）one-hot向量"><a href="#（一）one-hot向量" class="headerlink" title="（一）one-hot向量"></a>（一）one-hot向量</h2><pre><code>* 缺点：每个词是孤立的，使得算饭对相关词的泛化能力不强。从编码的数学特征来讲，任意两个词的one-hot向量内积都是0，是无法区分差别的。</code></pre><h2 id="（二）词嵌入向量"><a href="#（二）词嵌入向量" class="headerlink" title="（二）词嵌入向量"></a>（二）词嵌入向量</h2><h3 id="1、定义及特性"><a href="#1、定义及特性" class="headerlink" title="1、定义及特性"></a>1、定义及特性</h3><pre><code>* 对单词的一种特征化的表示；
+* 通过单词特征相似性的学习，使得算法对单词会泛化得更好；
+* 帮助实现类比推理；</code></pre><h4 id="词嵌入向量相似度评价"><a href="#词嵌入向量相似度评价" class="headerlink" title="词嵌入向量相似度评价"></a><strong>词嵌入向量相似度评价</strong></h4><pre><code>应用于类比推理  </code></pre><p>$$<br>$$<br>              相似度满足：$text{Find word w: argmax} Sim(e_{ w},e_{ king} - e_{ man} + e_{ woman} $  </p>
+<pre><code>参考：Linguistic regularities in continuous space word representations [J]  
+
+相似度算法：  
+
+  * **t-SNE算法：** 把高维向量非线性投影到二维平面，这种影射复杂而且非线性。而且不能总是期望等式成立。
+  * **余弦相似度：**</code></pre><p>$$<br>sim(u, v) = \frac{u.v}{\mid\mid u \mid\mid_{2}\mid\mid v \mid\mid_{2}} = cos(\phi) \<br>\phi 为向量u,v的夹角。 \<br>\mid\mid u \mid\mid_2 = \sqrt{\sum_{i=1}^{n}u_i^2}<br>$$<br><img src="/2023/08/25/sixth-git-blog/cosin.png" alt="余弦相似">  </p>
+<ul>
+<li>相似度计算<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dot = np.dot(u, v)</span><br><span class="line">norm_u = np.linalg.norm(u)</span><br><span class="line">norm_v = np.linalg.norm(v)</span><br><span class="line">cosine_similarity = dot / (norm_u * norm_v)</span><br></pre></td></tr></table></figure></li>
+<li>近似词查找<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 效果较好</span></span><br><span class="line">cosine_sim = cosine_similarity(e_b-e_a,word_to_vec_map[w]-e_c)</span><br><span class="line"><span class="comment"># 效果较差、运算时间长</span></span><br><span class="line">cosine_sim = cosine_similarity(word_to_vec_map[w], e_c) - cosine_similarity(e_b, e_a)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2、词嵌入向量可视化"><a href="#2、词嵌入向量可视化" class="headerlink" title="2、词嵌入向量可视化"></a>2、词嵌入向量可视化</h3><pre><code>将高维向量（如：300维）投影到二维空间里，这样就可以可视化了。  
+
+可视化算法：t-SNE。  
+
+  * 参考：&lt;https://psubnwell.github.io/2017/12/01/paper-note-t-sne/&gt;</code></pre><h3 id="3、词嵌入应用构建"><a href="#3、词嵌入应用构建" class="headerlink" title="3、词嵌入应用构建"></a>3、词嵌入应用构建</h3><pre><code>使用词嵌入做迁移学习的步骤：  
+
+  * 从大量的文本集中学习词嵌入；
+  * 将前面得到的词嵌入模型迁移到新的只有少量标注训练集的任务中</code></pre><h3 id="4、词嵌入向量构建"><a href="#4、词嵌入向量构建" class="headerlink" title="4、词嵌入向量构建"></a>4、词嵌入向量构建</h3><pre><code>* 词嵌入矩阵：$ E o_&#123;i&#125; = e_&#123;i&#125;$  - 这是词嵌入学习的目标。
+* 构建方法：建立一个语言模型是学习词嵌入的好方法。  </code></pre><p><strong>早期的词嵌入学习算法：</strong><br>            * one-hot 向量表<br>            * 参数矩阵E<br>            * softmax层（有自己的参数）<br>            * 固定历史窗口：选择指定个数（超参数）的单词进行softmax 预测。<br>                * 目标是学习词嵌入：可以尝试使用不同类型的上下文；<br>                * 目标为构建语言模型：一般选取目标词之前的几个词。  </p>
+<p>后面的模型使用了更简单的上下文选用方法，如上下文附近是一个单词。</p>
+<h4 id="1）WordVec（Skip-Gram）模型"><a href="#1）WordVec（Skip-Gram）模型" class="headerlink" title="1）WordVec（Skip-Gram）模型"></a>1）WordVec（Skip-Gram）模型</h4><pre><code>参考：Efficient Estimation of Word Representations in Vector Space[J]  
+**目标：**  
+抽取上下文和目标词配对，来构建一个**监督学习问题**。随机选 **一个词** 作为上下文词；随机在一定范围内选择目标词。这个监督学习问题不是为预测目标词，而是通过这个学习问题来学到一个好的词嵌入模型。  </code></pre><p>$$<br>$$<br>              <strong>网络架构：</strong><br>              i）上下文词one-hot向量，记为： $O_{c}$ ；<br>              ii） $e_{c} = EO_{c}$ ;<br>              iii）将 $e_{c}$ 喂入一个softmax单元，预测不同目标词的概率；  </p>
+<p>$$<br>              Softmax:p(t|c) = \frac{e^{\theta_{t}^{T}e_{c}}}{\sum_{j=1}^{10,000}e^{\theta_{t}^{T}e_{c}}}<br>$$<br>              $\theta_{t}$ : 某个词t和标签相符的概率。<br>              iv）损失函数  </p>
+<p>$$<br>              L(\hat{y}, y) = -\sum_{i=1}^{10,000}y_{i}log\hat{y}_{i}<br>              $$<br>              $y$ 是只有一个1，其余是0的one-hot向量；<br>              $\hat{y}$ 是一个从softmax单元输出的10,000维的向量，是所有可能目标词的概率；  </p>
+<pre><code>v）优化参数  
+  $$
+  $$
+  * 矩阵E参数
+  * softmax单元参数： $\theta_&#123;t&#125;$  </code></pre><p>优化关于上述参数的损失函数后就可得到较好的嵌入向量集。  </p>
+<p>vi）分级softmax分类器<br>                * softmax 单元分母求和操作相当慢，扩大词汇表比较困难。 - 使用分级（hierarchical）的softmax分类器；<br>                * 分级分类器被构造成常用词在顶部，不常用词在树的更深处；  </p>
+<p>vii）如何选择上下文c<br>                * 对语料库均匀且随机地采样<br>某些词（the、of、a、and）出现相当频繁的。</p>
+<h4 id="2）Word2Vec（CBOW）模型"><a href="#2）Word2Vec（CBOW）模型" class="headerlink" title="2）Word2Vec（CBOW）模型"></a>2）Word2Vec（CBOW）模型</h4><pre><code>**连续词袋模型（CBOW）：**  Continuous Bag-Of-Words Model.  
+
+  * 上下文选择：把目标词两边的词作为上下文，用周围的词去预测中间的词。  </code></pre><p><strong>CBOW与Skip-Gram的不同：</strong><br>                    * CBOW是从原始语句推测目标词；<br>                    * Skip-Gram相反，是从目标词推测出原始语句；</p>
+<h4 id="3）负采样（Skip-Gram）"><a href="#3）负采样（Skip-Gram）" class="headerlink" title="3）负采样（Skip-Gram）"></a>3）负采样（Skip-Gram）</h4><pre><code>用于解决Skip-Gram模型中Softmax计算慢，造成词库不便扩展的问题。&amp;#x20;  
+
+参考：Distributed Representations of Words and Phrases and their Compositionality[J]  
+
+**网络架构：**  
+i）构造一个监督学习问题，给定一对单词，预测这是否一对上下文词-目标词（context-target）。  
+ii）训练集样本选择  
+
+  * 正样本：同Skip-Gram样本生成方式，先抽取一个上下文词，在一定词距内选一个目标词；
+  * 负样本：用相同的上下文词，随机从词汇表中选择一个词；
+  * 如何选取K：小数据集：K就等于2到5；数据集很大，K就选大一点。 $\frac&#123;1&#125;&#123;K&#125;$ 为正负样本比例，即：每一个正样本都有K个对应的负样本来训练一个类似逻辑回归的模型。  </code></pre><p>iii）定义模型 - 一个逻辑回归模型：单词对是正样本还是负样本<br>$$<br>P(y=1|c,t) = \sigma(\theta^{T}_{t}e_{c})<br>$$<br>假设单词表个数为N，则看作有N个二分类逻辑回归分类器，但只训练一个正样本和K个负样本逻辑分类器。从而避免N维度的softmax。  </p>
+<p>iv）负采样样本选取<br>                    * 依据经验频率采样<br>                    * 随机选取<br>                    * 常用负采样频率<strong>经验公式：</strong><br>$$<br>P(w_{i}) = \frac{f(w_{i})^{\frac{3}{4}}}{\sum_{j=1}^{10,000}f(w_{j})^{\frac{3}{4}}}<br>$$ </p>
+<p>$f(w_{i})$ 是观测到的在语料库中的某个英文单词大词频， $\frac{3}{4}$ 次方的计算，使其处于完全大独立分布和训练集的观测分布两个极端之间。</p>
+<h4 id="4）Glove模型"><a href="#4）Glove模型" class="headerlink" title="4）Glove模型"></a>4）Glove模型</h4><pre><code>**GloVe：** global vectors for word representation  
+资料：Glove: Global Vectors for Word Representation[C]// Conference on Empirical Methods in Natural Language Processing  </code></pre><p>$$<br>$$<br>                  定义： $X_{ ij} $为单词 <strong>i</strong> 在单词 <strong>j</strong> 上下文中出现的次数，且为任意两个位置相近的单词，假设左右各10词的距离。$ X_{ ij} $ 就是一个能够获取单词i和单词j出现位置相近或是彼此接近的频率的计数器。  </p>
+<pre><code>Glove模型代价函数：  </code></pre><p>$$<br>                  minimize\sum_{i=1}^{10,000}\sum_{j=1}^{10,000}f(X_{ij})(\theta_{i}^{T}e_{j} + b_{i} + b_{j}^{‘}-logX_{ij})^{2}<br>$$                    </p>
+<h5 id="i）-f-X-ij-作用："><a href="#i）-f-X-ij-作用：" class="headerlink" title="i） $f(X_{ij})$ 作用："></a>i） $f(X_{ij})$ 作用：</h5><pre><code>* 加权项  </code></pre><p>如果 $X_{ij}$ 为0，不相关项，不求和。<br>                        * 停止词<br>对步常用的词给予有意义大运算，对出现更频繁的词给予更大但不至于过分大权重。</p>
+<h5 id="ii）-theta-i-和-e-j-是完全对称的"><a href="#ii）-theta-i-和-e-j-是完全对称的" class="headerlink" title="ii） $\theta_{i} 和 e_{j}$ 是完全对称的"></a>ii） $\theta_{i} 和 e_{j}$ 是完全对称的</h5><pre><code>**问题：** 线性变换后没有激活/分类函数？  </code></pre><h2 id="（三）应用-情感分类"><a href="#（三）应用-情感分类" class="headerlink" title="（三）应用 - 情感分类"></a>（三）应用 - 情感分类</h2><h3 id="任务目标"><a href="#任务目标" class="headerlink" title="任务目标"></a>任务目标</h3><pre><code>通过一段文本分辨其中表现出的好恶感受。使用词嵌入解决标记训练集不足的问题。  </code></pre><h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><pre><code>* 1）将标签值转换为one-hot向量；
+* 2）将训练样本每个词转换为词嵌入向量，按句子计算平均值或求和汇总的“句向量”；
+* 3）对“句向量”进行softmax分类；</code></pre><h4 id="1、平均值"><a href="#1、平均值" class="headerlink" title="1、平均值"></a>1、平均值</h4><pre><code>* 计算平均值  </code></pre><p><img src="/2023/08/25/sixth-git-blog/mean.png" alt="平均值"><br>                  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">maxLen = <span class="built_in">len</span>(<span class="built_in">max</span>(X_train, key=<span class="built_in">len</span>).split())</span><br><span class="line"></span><br><span class="line">avg = np.zeros(<span class="number">50</span>)</span><br><span class="line"><span class="keyword">for</span> w <span class="keyword">in</span> words:</span><br><span class="line">avg += word_to_vec_map[w]</span><br><span class="line">avg = avg / <span class="built_in">len</span>(words)</span><br></pre></td></tr></table></figure><br>                * Model<br>$$<br>z^{(i)} = W \times avg^{(i)} + b \<br>a^{(i)} = softmax(z^{(i)}) \<br>\mathcal{L}^{(i)} = - \sum_{k = 0}^{n_y - 1} Yoh^{(i)}_k * log(a^{(i)}_k)<br>$$                  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 转换成one-hot 向量</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">convert_to_one_hot</span>(<span class="params">Y, C</span>):</span><br><span class="line">Y = np.eye(C)[Y.reshape(-<span class="number">1</span>)]</span><br><span class="line"><span class="keyword">return</span> Y</span><br></pre></td></tr></table></figure>
+<p>对句子中的词向量求和平均后送入softmax分类器。<br>缺点：未考虑词序。</p>
+<h4 id="2、使用LSTM单元"><a href="#2、使用LSTM单元" class="headerlink" title="2、使用LSTM单元"></a>2、使用LSTM单元</h4><ul>
+<li>模型  </li>
+</ul>
+<p><img src="/2023/08/25/sixth-git-blog/lstm_cell.png" alt="LSTM">  </p>
+<p>针对序列模型，大多数深度学习狂降要求在同一个mini-batch中，样本长度一致。这使得向量化可以工作，3字词和4字词计算量不同，在LSTM中所需步数也不同，因此也<strong>不可能同时处理。</strong><br>                    * 解决办法：设置一个序列最大长度，使用“0”进行padding；超长则截断；<br>                    * Keras Embedding layer<br>Keras中，嵌入矩阵（embedding matrix）由“嵌入层”实现，完成从单词索引映射到词嵌入向量。</p>
+<h2 id="（四）纠偏处理"><a href="#（四）纠偏处理" class="headerlink" title="（四）纠偏处理"></a>（四）纠偏处理</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><pre><code>减少词嵌入中一些非预见形式的偏见出现。  </code></pre><h3 id="偏见趋势识别步骤"><a href="#偏见趋势识别步骤" class="headerlink" title="偏见趋势识别步骤"></a>偏见趋势识别步骤</h3><p>$$<br>$$<br>          1、对于性别歧视情况，简单差值平均<br>          计算：$e_{ he} - e_{ she} $、$ e_{ male} - e_{ female} $，求平均。<br>          更加复杂的算法：SVU(奇异值分解)  </p>
+<pre><code>2、中和步骤，对于定义不确切的词进行处理，避免偏见。  
+
+  * 对于一个50维的词嵌入向量可以被分成两个部份：偏见（bias-direction）方向分量、其他维度分量；
+  * 在线性代数中，偏见分量与其他方向分量正交；
+  * 均衡过程则是清零偏见方向，从而获得纠偏后的向量，如：`$e_&#123;receptionist&#125; \text&#123;-&gt;&#125; e_&#123;receptionist&#125;^&#123;debiased&#125; $`；  </code></pre><p><img src="/2023/08/25/sixth-git-blog/recognize.png" alt="识别"><br>            * 公式<br>$$<br>e^{bias_component} = \frac{e*g}{||g||_2^2} * g  \<br>e^{debiased} = e - e^{bias_component}<br>$$</p>
+<p>$e^{bias_component}$  为e在g方向上的投影。<br>            * 代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">e_biascomponent = np.dot(np.dot(e, g) / np.linalg.norm(g), g)</span><br><span class="line">e_debiased = e - e_biascomponent</span><br></pre></td></tr></table></figure>
+
+<pre><code>3、均衡步骤  
+应用于单词对以使两个单词仅在如性别属性上存在差异，实现以下亮点：  
+
+  * 确保两个单词到49维（总共50维，加1维偏见分量）的$g_\perp$等距；
+  * 确保两个单词到$e_&#123;receptionist&#125;^&#123;debiased&#125;$或其他中和过程结果距离相等；  </code></pre><p><img src="/2023/08/25/sixth-git-blog/equal.png" alt="均衡">  </p>
+<ul>
+<li>公式<br>$$<br>\mu = \frac{e_{w1} + e_{w2}}{2} \<br>$$</li>
+</ul>
+<p>$$<br>\mu_{B} = \frac{\mu * \text{bias_axis}}{||\text{bias_axis}||_2} + ||\text{bias_axis}||_2 * \text{bias_axis} \<br>$$</p>
+<p>$$<br>\mu_{\perp} = \mu - \mu_{B} \<br>$$</p>
+<p>$$<br>e_{w1B} = \sqrt{ |{1 - ||\mu_{\perp} ||^2_2} |} * \frac{(e_{\text{w1}} - \mu_{\perp}) - \mu_B} {|(e_{w1} - \mu_{\perp}) - \mu_B)|} \<br>$$</p>
+<p>$$<br>e_{w2B} = \sqrt{ |{1 - ||\mu_{\perp} ||^2_2} |} * \frac{(e_{\text{w2}} - \mu_{\perp}) - \mu_B} {|(e_{w2} - \mu_{\perp}) - \mu_B)|} \<br>$$</p>
+<p>$$<br>e_1 = e_{w1B} + \mu_{\perp} \<br>e_2 = e_{w2B} + \mu_{\perp}<br>$$</p>
+<h1 id="三、序列模型和注意力机制"><a href="#三、序列模型和注意力机制" class="headerlink" title="三、序列模型和注意力机制"></a>三、序列模型和注意力机制</h1><p>  定义：从一个“序列”生成另一个序列，如：机器翻译和语言识别。  </p>
+<h2 id="（一）seq2seq-（sequence-to-sequence）模型架构"><a href="#（一）seq2seq-（sequence-to-sequence）模型架构" class="headerlink" title="（一）seq2seq （sequence to sequence）模型架构"></a>（一）seq2seq （sequence to sequence）模型架构</h2><pre><code>资料：  
+
+  * Sequence to Sequence Learning with Neural Networks
+  * Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation  </code></pre><p>模型由编码网络和解码网络构成（seq2seq）。<br>        * 编码网络（encoder network）<br>接收输入序列，编码网络输出一个向量来代表这个输入序列。<br>        * 解码网络（decoder network）<br>以编码网络的输出作为输入，解码网络被训练为每次输出一个翻译后的单词，一直到它输出序列的结尾或者句子结尾标记。  </p>
+<p>类似的网络，如：image2seq<br>给出一张图片，自动输出该图片的描述。</p>
+<h2 id="（二）-机器翻译模型"><a href="#（二）-机器翻译模型" class="headerlink" title="（二） 机器翻译模型"></a>（二） 机器翻译模型</h2><pre><code>**机器翻译模型** 等同于**条件语言模型**，其与**语言模型**的区别是：  
+语言模型总是以零向量开始，而机器翻译模型则是以encoder网络计算出的输出作为decoder网络输入。  
+
+  * **目标：**</code></pre><p>$$<br>argmax_{y^{&lt;1&gt;},…,y^{&lt;T_{y}&gt;}}P(y^{&lt;1&gt;},…,y^{&lt;T_{y}&gt;}|x)<br>$$ </p>
+<p>使用机器翻译模型从法语翻译成英语时需要达到的目标是：找到一个英语句子y，使得条件概率最大化。解决这种问题的最通用的算法就是<strong>束搜索（Beam Search）</strong>。<br>        * <strong>束搜索 和 贪心搜索（Greedy Search）</strong><br>            * 束搜索：每一层选出前 N 个预测值；<br>            * 贪心搜索：每一次选出最有可能的词；<br>        * <strong>机器翻译模型和语言模型的主要区别</strong>：<br>机器翻译模型要找到最有可能的翻译句子，语言模型则是随机生成句子。</p>
+<h3 id="1、基本束搜索（BeamSearch）"><a href="#1、基本束搜索（BeamSearch）" class="headerlink" title="1、基本束搜索（BeamSearch）"></a>1、基本束搜索（BeamSearch）</h3><pre><code>* 集束宽度（Beam width）
+* 集束算法处理流程（解码过程）：
+    * 1）挑选出要输出的英语翻译中的第一个单词，即以编码结果作为输入，第一个输出y值的概率；贪婪算法只会挑出最可能的那一个单词；
+    * 2）依据集束算法针对每个第一个单词考虑第二个单词是什么，即：以第一个输出y值作为输入，计算第二个y值的输出概率；  </code></pre><p><strong>注意：</strong> 这里不是单单关注第二个单词有最大的概率，而是第一个、第二个单词对有最大的概率。<br>                * 3）找到第一个和第二个单词对最可能的三个选择（集束宽度为3）；  </p>
+<h3 id="2、改进集束搜索（Refinements-to-Beam-Search）"><a href="#2、改进集束搜索（Refinements-to-Beam-Search）" class="headerlink" title="2、改进集束搜索（Refinements to Beam Search）"></a>2、改进集束搜索（Refinements to Beam Search）</h3><pre><code>*   **问题：**  
+  1）概率值连乘造成的**数值下溢**；  
+  2）以概率值连乘作为目标函数，造成长句子的概率很低，这倾向于选择简短的翻译结果。  
+
+*   **解决：**  
+  1）取概率值连乘的对数以避免数值下溢  </code></pre><p>$$<br>          argmax\text{ }log(\prod_{t=1}^{T_{y}}P(y^{&lt;t&gt;}|x, y^{&lt;1&gt;},…,y^{&lt;t-1&gt;})) = argmax \sum_{t=1}^{T_{y}}logP(y^{&lt;t&gt;}|x, y^{&lt;1&gt;},…,y^{&lt;t-1&gt;})<br>$$<br>          2）归一化以减少对输出长结果的惩罚<br>          除以翻译结果的单词数量，即取每个单词的概率对数值的平均。<br>          更柔和的处理方法：在$T_{y}$上加上指数$\alpha$(0.7)。  </p>
+<p>$$<br>          argmax \text{ }\frac{1}{T_{y}^{\alpha}}\sum_{t=1}^{T_{y}}logP(y^{&lt;t&gt;}|x, y^{&lt;1&gt;},…,y^{&lt;t-1&gt;})<br>$$<br>          超参数 $\alpha$ :  </p>
+<pre><code>* 0: 完全没有归一化；
+* 1: 用长度归一化；
+* 0～1: “柔和”归一化；</code></pre><h3 id="3、集束宽度（B）选择"><a href="#3、集束宽度（B）选择" class="headerlink" title="3、集束宽度（B）选择"></a>3、集束宽度（B）选择</h3><pre><code>B 越大,你考虑的选择越多,你找到的句子可能越好,但是 B 越大,你的算法的计算代价越大。  </code></pre><h3 id="4、集束搜索的误差分析"><a href="#4、集束搜索的误差分析" class="headerlink" title="4、集束搜索的误差分析"></a>4、集束搜索的误差分析</h3><pre><code>束搜索算法是一种近似搜索算法(an approximate search algorithm),也被称作启发式搜索算法(a heuristic search algorithm),它不总是输出可能性最大的句子, 它仅记录着 B 为前 3 或者 10 或是 100 种可能。  
+
+**误差分析**，用于分析是 **束搜索** 算法出了问题还是 **RNN模型** 出了问题，即确定模型的两个主要部份：  
+
+  * 序列到序列模型：编码器和解码器
+  * 束搜索算法：以集束宽度B运行  </code></pre><p>问题之所在。  </p>
+<p><strong>分析方法：</strong>  </p>
+<p><img src="/2023/08/25/sixth-git-blog/4-1.png" alt="分析方法"></p>
+<p>$$<br>$$<br>    1）将 $y^{<em>}$ 和 $\hat{y}$ 分别代入解码公式，计算 $P(y^{</em>}|x)$ 和 $P(\hat{y}|x)$ ;<br>    2）比较大小得出结论：  </p>
+<p><img src="/2023/08/25/sixth-git-blog/4-2.png" alt="结论">  </p>
+<h3 id="5、Bleu-得分"><a href="#5、Bleu-得分" class="headerlink" title="5、Bleu 得分"></a>5、Bleu 得分</h3><pre><code>用于解决有多个答案时衡量准确度，即：给定一个机器生成的翻译，Bleu自动地计算一个分数来衡量机器翻译的好坏。  
+
+  * **机器翻译的精确度**  </code></pre><p>观察输出结果的每一个词看其是否出现在参考中。<br>            * <strong>改良精确度评估</strong><br>分母为一个单词在输出结果中出现的次数，分子是这个单词在参考集中的出现次数（<strong>截取计数（the clipped count）</strong>）。<br>            * <strong>二元词组（bigrams）的BLEU得分</strong><br>相邻两个单词<br>$$<br>P_{1} = \frac{\sum_{unigram \in \hat{y}} CountClip(unigram)}{\sum_{unigram \in \hat{y}}Count(unigram)}  \<br>P_{n} = \frac{\sum_{n.unigram \in \hat{y}} CountClip(n.unigram)}{\sum_{n.unigram \in \hat{y}}Count(n.unigram)}<br>$$<br>            * 综合BLEU得分<br>$$<br>Combined Bleu score: BP e^{\frac{1}{4}\sum_{n=1}^{4}P_{n}} \<br>BP为简短惩罚调整因子：惩罚输出了太短翻译结果的系统。 \<br>BP = \left\{<br>\begin{aligned}<br>if \text{ }MT_output_lenth \gt reference_output_lehgth \text{  }  1 \<br>else \text{      } e^{1 - \frac{MT_output_length}{reference_output_length}}<br>\end{aligned}<br>\right.<br>$$</p>
+<h2 id="（三）注意力模型（Attention-Model）"><a href="#（三）注意力模型（Attention-Model）" class="headerlink" title="（三）注意力模型（Attention Model）"></a>（三）注意力模型（Attention Model）</h2><pre><code>**注意力模型** 或者说 **注意力这种思想(The attention algorithm, the attention idea)** 已经是深度学习中最重要的思想之一。  
+
+**问题：**  
+前面的编码解码结构对于短句子效果非常好（会有一个相对高的Bleu分），但是对于长的句子表现会变差。  
+![问题](5-1.png)   
+因为，在神经网络中记忆非常长句子是非常困难的。  
+**注意力模型** 则翻译得很象人类，一次翻译句子的一部分。  
+参考：Neural Machine Translation by Jointly Learning to Align and Translate[J].  
+Computer Science, 2014.  
+
+**处理流程：**  </code></pre><p><img src="/2023/08/25/sixth-git-blog/5-2.png" alt="处理流程">  </p>
+<pre><code>* 直观来想就是 RNN 向前进一次生成一个词, 在每一步直到最终生成可能是&lt;EOS&gt;
+* 生成第t个英文词,它应该花多少注意力在第t个法语词上面；
+* 生成第t个英文词,它应该花多少注意力在第t个法语词周围词距内的法语要花多少注意力；  </code></pre><p>$$<br>c^{&lt;t&gt;} = ∑_{ t’}^{ Tx}α^{ &lt;t,t’&gt;}a^{&lt;t’&gt;}<br>a^{t’} = (overrightarrow{a}^{&lt;t’&gt;},overleftarrow{a}^{&lt;t’&gt;})<br>$$</p>
+<ul>
+<li>计算 $\alpha^{&lt;t,t’&gt;}$ , 这是花费在 $a^{&lt;t’&gt;}$ 上的注意力数量<br>要求：$∑<em>{t’}^{T</em>{x}}α^{&lt;t,t’&gt;} = 1$，因此优先使用 softmax，确保这些值加起来等于1。</li>
+</ul>
+<p>$$<br>\alpha^{&lt;t,t’&gt;} = \frac{exp(e^{&lt;t,t’&gt;})}{\sum_{t’=1}^{T_{x}}exp(e^{&lt;t,t’&gt;})} \<br>$$ </p>
+<p>从公式可看出：  </p>
+<pre><code>* 每个注意力参数$\alpha$集都是从第一个输入开始到 $T_&#123;x&#125;$ ；
+* exp() 是一个待确定的函数；  </code></pre><p>用下图中小的神经网络：<br>训练一个网络，输入为： $S^{&lt;t-1&gt;}, C^{&lt;t&gt;}$ 生成 $y^{&lt;t&gt;}$ ，通过梯度下降学习到 exp().  </p>
+<p><img src="/2023/08/25/sixth-git-blog/5-3.png" alt="训练网络"> </p>
+<p>这个算法的复杂度是O(n3)，如果有 $T_{x}个输入和T_{y}$ 个输出单词，于是注意力参数的总数是 $T_{x} \times T_{y}$ 。  </p>
+<p><strong>注意力模型的其他应用</strong><br>        * 图片加标题<br>        * 日期标准化</p>
+<h2 id="（四）语音识别"><a href="#（四）语音识别" class="headerlink" title="（四）语音识别"></a>（四）语音识别</h2><p>  语音识别问题：将一个音频片段x，自动生成文本y。<br>  使用 end-to-end 模型不再需要使用人工设计的<strong>音位表示法（phonemes representations）</strong>。  </p>
+<h3 id="1、注意力模型"><a href="#1、注意力模型" class="headerlink" title="1、注意力模型"></a>1、注意力模型</h3><p><img src="/2023/08/25/sixth-git-blog/5-4.png" alt="语音识别"></p>
+<h3 id="2、CTC（Connectionist-Temporal-Classification：连接时序分类）损失函数"><a href="#2、CTC（Connectionist-Temporal-Classification：连接时序分类）损失函数" class="headerlink" title="2、CTC（Connectionist Temporal Classification：连接时序分类）损失函数"></a>2、CTC（Connectionist Temporal Classification：连接时序分类）损失函数</h3><pre><code>资料：Connectionist temporal classification:labelling unsegmented sequence data with recurrent neural networks  
+
+  * 在语音识别中,通常输入的时间步数量(the number of input time steps)要比输出的时间步的数量(the number of output time steps)多出很多。
+  * CTC 损失函数允许 RNN 生成这样的输出: ttt,这是一个特殊的字符,叫做空白符；
+  * CTC 损失函数的一个基本规则是将空白符之间的重复的字符折叠起来；</code></pre><h2 id="（五）触发字检测（Trigger-Word-Detection）"><a href="#（五）触发字检测（Trigger-Word-Detection）" class="headerlink" title="（五）触发字检测（Trigger Word Detection）"></a>（五）触发字检测（Trigger Word Detection）</h2><h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><pre><code>把一个音频片段(an audio clip)计算出它的声谱图特征(spectrogram features)得到特征向量
+$x^&#123;\&lt;1\&gt;&#125;, x^&#123;\&lt;2\&gt;&#125;, x^&#123;\&lt;3\&gt;&#125;$,然后把它放到 RNN 中,最后要做的, 就是定义我们的目标标签 y。  
+
+**缺点：**  
+按上述方式构建的训练集很不平衡，0的数量比1多太多。  
+
+**解决方法：**  
+比起只在一个时间步上去输出 1,其实你可以在输出变回 0 之前,多次输出 1,或说在固定的一段时间内输出多个 1。这样的话,就稍微提高了 1 与 0 的比例.</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://example.com/2023/08/25/sixth-git-blog/" data-id="cllqfapj90000vwh71iisdd1c" class="article-share-link" data-share="baidu" data-title="第五章：序列模型">Share</a>
+      
+
+      
+        <a href="http://example.com/2023/08/25/sixth-git-blog/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98/" rel="tag">深度挖掘</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2023/08/15/fifth-git-blog/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">第四章：卷积神经网络</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2023/08/25/sixth-git-blog/" data-title="第五章：序列模型" data-url="http://example.com/2023/08/25/sixth-git-blog/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8F%82%E6%95%B0%E8%B0%83%E8%8A%82/">参数调节</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98/" rel="tag">深度挖掘</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%95%AA%E5%A4%96%E7%AF%87/" rel="tag">番外篇</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/%E6%B7%B1%E5%BA%A6%E6%8C%96%E6%8E%98/" style="font-size: 20px;">深度挖掘</a> <a href="/tags/%E7%95%AA%E5%A4%96%E7%AF%87/" style="font-size: 10px;">番外篇</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a><span class="archive-list-count">6</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/08/25/sixth-git-blog/">第五章：序列模型</a>
+          </li>
+        
+          <li>
+            <a href="/2023/08/15/fifth-git-blog/">第四章：卷积神经网络</a>
+          </li>
+        
+          <li>
+            <a href="/2023/08/05/four-git-blog/">第三章：结构化机器学习项目</a>
+          </li>
+        
+          <li>
+            <a href="/2023/07/27/hexo-equation-blog/">Hexo如何解决公式渲染问题</a>
+          </li>
+        
+          <li>
+            <a href="/2023/07/27/third-git-blog/">第二章 改善深层神经网络：超参数调试、正则化及优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://arvinxiang.com" target="_blank">主题作者</a>
+          </li>
+        
+          <li>
+            <a href="http://reqianduan.com" target="_blank">热前端</a>
+          </li>
+        
+          <li>
+            <a href="http://yuancheng.work" target="_blank">远程.work</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 John Doe<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="totop"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"reqianduan"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>
+  function SetShareData(cmd, config) {
+    if (shareDataTitle && shareDataUrl) {
+      config.bdText = shareDataTitle;
+      config.bdUrl = shareDataUrl;
+    }
+    return config;
+  }
+  window._bd_share_config={
+    "common":{onBeforeClick: SetShareData},
+    "share":{"bdCustomStyle":"/css/bdshare.css"}
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>
